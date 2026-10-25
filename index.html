@@ -1,0 +1,301 @@
+<!doctype html>
+<html lang="ru">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>FLOW STATE MUSIC</title>
+
+    <!-- Шрифты: Bebas Neue (заголовки) + Inter (текст). Заменим позже, если найдём оригинал -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@300;400;500;600&display=swap"
+      rel="stylesheet"
+    />
+
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <aside class="rail rail--left" aria-hidden="true">
+      <div class="rail__track">
+        <div class="rail__group">
+          <span>FLOW STATE MUSIC</span><span class="rail__dot">•</span>
+          <span>MOSCOW</span><span class="rail__dot">•</span>
+          <span>EST. 2024</span><span class="rail__dot">•</span>
+          <span>THRILL PILL</span><span class="rail__dot">•</span>
+          <span>XXXMANERA</span><span class="rail__dot">•</span>
+          <span>APX1TEKTOP</span><span class="rail__dot">•</span>
+        </div>
+        <div class="rail__group">
+          <span>FLOW STATE MUSIC</span><span class="rail__dot">•</span>
+          <span>MOSCOW</span><span class="rail__dot">•</span>
+          <span>EST. 2024</span><span class="rail__dot">•</span>
+          <span>THRILL PILL</span><span class="rail__dot">•</span>
+          <span>XXXMANERA</span><span class="rail__dot">•</span>
+          <span>APX1TEKTOP</span><span class="rail__dot">•</span>
+        </div>
+        <div class="rail__group">
+          <span>FLOW STATE MUSIC</span><span class="rail__dot">•</span>
+          <span>MOSCOW</span><span class="rail__dot">•</span>
+          <span>EST. 2024</span><span class="rail__dot">•</span>
+          <span>THRILL PILL</span><span class="rail__dot">•</span>
+          <span>XXXMANERA</span><span class="rail__dot">•</span>
+          <span>APX1TEKTOP</span><span class="rail__dot">•</span>
+        </div>
+      </div>
+    </aside>
+
+    <aside class="rail rail--right" aria-hidden="true">
+      <div class="rail__track">
+        <div class="rail__group">
+          <span>FLOW STATE MUSIC</span><span class="rail__dot">•</span>
+          <span>MOSCOW</span><span class="rail__dot">•</span>
+          <span>EST. 2024</span><span class="rail__dot">•</span>
+          <span>XXXMANERA</span><span class="rail__dot">•</span>
+          <span>THRILL PILL</span><span class="rail__dot">•</span>
+          <span>APX1TEKTOP</span><span class="rail__dot">•</span>
+        </div>
+        <div class="rail__group">
+          <span>FLOW STATE MUSIC</span><span class="rail__dot">•</span>
+          <span>MOSCOW</span><span class="rail__dot">•</span>
+          <span>EST. 2024</span><span class="rail__dot">•</span>
+          <span>XXXMANERA</span><span class="rail__dot">•</span>
+          <span>THRILL PILL</span><span class="rail__dot">•</span>
+          <span>APX1TEKTOP</span><span class="rail__dot">•</span>
+        </div>
+        <div class="rail__group">
+          <span>FLOW STATE MUSIC</span><span class="rail__dot">•</span>
+          <span>MOSCOW</span><span class="rail__dot">•</span>
+          <span>EST. 2024</span><span class="rail__dot">•</span>
+          <span>XXXMANERA</span><span class="rail__dot">•</span>
+          <span>THRILL PILL</span><span class="rail__dot">•</span>
+          <span>APX1TEKTOP</span><span class="rail__dot">•</span>
+        </div>
+      </div>
+    </aside>
+    <!-- ================= HEADER / МЕНЮ ================= -->
+    <header class="header" id="header">
+      <a class="header__logo" href="#hero" aria-label="Flow State Music — наверх">FSM</a>
+
+      <nav class="nav" id="nav" aria-label="Основное меню">
+        <a class="nav__link" href="#about">О нас</a>
+        <a class="nav__link" href="#artists">Артисты</a>
+        <a class="nav__link" href="#partners">Партнёры</a>
+        <a class="nav__link" href="#contacts">Контакты</a>
+      </nav>
+
+      <button
+        class="burger"
+        id="burger"
+        type="button"
+        aria-label="Открыть меню"
+        aria-expanded="false"
+        aria-controls="nav"
+      >
+        <span></span><span></span>
+      </button>
+    </header>
+
+    <!-- ================= HERO ================= -->
+    <section class="hero" id="hero">
+      <h1 class="hero__title">FLOW STATE MUSIC</h1>
+
+      <div class="equalizer" id="equalizer" aria-hidden="true"></div>
+
+      <button class="hero__scroll" id="scrollDown" aria-label="Прокрутить вниз">
+        <svg
+          width="32"
+          height="32"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="1.5"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        >
+          <polyline points="6 9 12 15 18 9"></polyline>
+        </svg>
+      </button>
+    </section>
+
+    <!-- ================= ABOUT ================= -->
+    <section class="about" id="about">
+      <div class="about__inner">
+        <div class="about__image">
+          <!-- ЗАМЕНИ: иллюстрация человека в наушниках -->
+          <img src="images/image-1.png" alt="Flow State Music" />
+        </div>
+
+        <div class="about__content">
+          <h2 class="about__title">FLOW STATE —</h2>
+          <p class="about__desc">
+            международный музыкальный лейбл, независимый издатель России
+          </p>
+
+          <ul class="about__stats">
+            <li><span>10+</span> подписанных артистов</li>
+            <li><span>100+</span> опубликованных треков</li>
+            <li><span>1 000 000+</span> прослушиваний ежемесячно</li>
+          </ul>
+
+          <p class="about__values">
+            Каждый артист лейбла —<br />
+            часть одной семьи<br />
+            Честность<br />
+            Открытость<br />
+            Осознанность
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= ARTISTS ================= -->
+    <section class="artists" id="artists">
+      <h2 class="section-title">Артисты</h2>
+
+      <div class="carousel" id="artistsCarousel">
+        <ul class="carousel__track" tabindex="0" aria-label="Артисты лейбла">
+          <li class="carousel__slide">
+            <a href="#" class="artist-card">
+              <div class="artist-card__image">
+                <img src="images/artist-1.jpg" alt="XXXMANERA" loading="lazy" draggable="false" />
+              </div>
+              <h3 class="artist-card__name">XXXMANERA</h3>
+            </a>
+          </li>
+          <li class="carousel__slide">
+            <a href="#" class="artist-card">
+              <div class="artist-card__image">
+                <img src="images/artist-2.jpg" alt="THRILL PILL" loading="lazy" draggable="false" />
+              </div>
+              <h3 class="artist-card__name">THRILL PILL</h3>
+            </a>
+          </li>
+          <li class="carousel__slide">
+            <a href="#" class="artist-card">
+              <div class="artist-card__image">
+                <img src="images/artist-3.jpg" alt="APX1TEKTOP" loading="lazy" draggable="false" />
+              </div>
+              <h3 class="artist-card__name">APX1TEKTOP</h3>
+            </a>
+          </li>
+        </ul>
+
+        <div class="carousel__controls">
+          <button class="carousel__arrow carousel__arrow--prev" type="button" aria-label="Предыдущий артист">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="15 18 9 12 15 6"></polyline></svg>
+          </button>
+          <div class="carousel__dots"></div>
+          <button class="carousel__arrow carousel__arrow--next" type="button" aria-label="Следующий артист">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="9 18 15 12 9 6"></polyline></svg>
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= MARQUEE ================= -->
+    <div class="marquee" aria-hidden="true">
+      <div class="marquee__track">
+        <span>БОЛЬШЕ О НАС</span>
+        <span>•</span>
+        <span>БОЛЬШЕ О НАС</span>
+        <span>•</span>
+        <span>БОЛЬШЕ О НАС</span>
+        <span>•</span>
+        <span>БОЛЬШЕ О НАС</span>
+        <span>•</span>
+        <span>БОЛЬШЕ О НАС</span>
+        <span>•</span>
+        <span>БОЛЬШЕ О НАС</span>
+        <span>•</span>
+        <span>БОЛЬШЕ О НАС</span>
+        <span>•</span>
+        <span>БОЛЬШЕ О НАС</span>
+        <span>•</span>
+      </div>
+    </div>
+
+    <!-- ================= PARTNERS ================= -->
+    <section class="partners" id="partners">
+      <h2 class="section-title">Партнёры</h2>
+
+      <div class="partners__grid">
+        <div class="partners__item">
+          <!-- ЗАМЕНИ: логотип Kovala Music -->
+          <img src="images/partner-1.svg" alt="Kovala Music" />
+        </div>
+        <div class="partners__item">
+          <img src="images/partner-2.svg" alt="Zvonko Digital" />
+        </div>
+        <div class="partners__item">
+          <img src="images/partner-3.svg" alt="Яндекс Музыка" />
+        </div>
+        <div class="partners__item">
+          <img src="images/partner-4.svg" alt="VK Музыка" />
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= CONTACTS ================= -->
+    <section class="contacts" id="contacts">
+      <!-- Волнистый срез сверху -->
+      <div class="contacts__cut" aria-hidden="true">
+        <svg viewBox="0 0 1440 120" preserveAspectRatio="none">
+          <path d="M0,0 L720,100 L1440,0 L1440,0 L0,0 Z" fill="#000000" />
+        </svg>
+      </div>
+
+      <div class="contacts__inner">
+        <a class="contact-btn" href="#">
+          <span>Telegram-канал</span>
+          <svg
+            width="20"
+            height="20"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <polyline points="9 18 15 12 9 6"></polyline>
+          </svg>
+        </a>
+
+        <a class="contact-btn" href="#">
+          <span>Менеджер telegram</span>
+          <svg
+            width="20"
+            height="20"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <polyline points="9 18 15 12 9 6"></polyline>
+          </svg>
+        </a>
+
+        <a class="contact-btn" href="#">
+          <span>Студия звукозаписи</span>
+          <svg
+            width="20"
+            height="20"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <polyline points="9 18 15 12 9 6"></polyline>
+          </svg>
+        </a>
+      </div>
+    </section>
+
+    <script src="script.js"></script>
+  </body>
+</html>

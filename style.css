@@ -1,0 +1,899 @@
+/* =========================================================
+   1. ПЕРЕМЕННЫЕ
+   ========================================================= */
+:root {
+  --bg: #060606;
+  --text: #ffffff;
+  --purple: #5b21b6;
+  --purple-light: #7c3aed;
+  --muted: rgba(255, 255, 255, 0.75);
+
+  --font-display: "Bebas Neue", sans-serif;
+  --font-body: "Inter", sans-serif;
+
+  --container: 1200px;
+  --gutter: 24px;
+
+  --rail-width: 90px;
+  --rail-duration: 10s; /* ← скорость прокрутки rails */
+}
+
+/* =========================================================
+   2. СБРОС
+   ========================================================= */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+img {
+  display: block;
+  max-width: 100%;
+  height: auto;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+ul {
+  list-style: none;
+}
+
+button {
+  background: none;
+  border: none;
+  color: inherit;
+  font: inherit;
+  cursor: pointer;
+}
+
+/* =========================================================
+   3. ГЛОБАЛЬНЫЕ СТИЛИ
+   ========================================================= */
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font-body);
+  font-size: 16px;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+  position: relative;
+  padding-left: var(--rail-width);
+  padding-right: var(--rail-width);
+}
+
+/* ===== Зерно по всему фону ===== */
+body::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 9999;
+
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 300 300' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  background-size: 300px 300px;
+
+  opacity: 0.06;
+  mix-blend-mode: overlay;
+}
+
+/* Общие заголовки секций */
+.section-title {
+  font-family: var(--font-display);
+  font-size: clamp(32px, 4vw, 56px);
+  letter-spacing: 0.02em;
+  text-align: center;
+  margin-bottom: 60px;
+  text-transform: uppercase;
+}
+
+/* =========================================================
+   4. БОКОВЫЕ RAILS
+   ========================================================= */
+.rail {
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  width: var(--rail-width);
+  z-index: 50;
+  overflow: hidden;
+  /* rotate ВЕСЬ rail целиком, а не группу — устраняет subpixel-дёрг */
+  transform: rotate(180deg);
+}
+
+.rail--left {
+  left: 0;
+  border-right: 1px solid rgba(255, 255, 255, 0.22);
+}
+
+.rail--right {
+  right: 0;
+  border-left: 1px solid rgba(255, 255, 255, 0.22);
+}
+
+.rail__track {
+  display: flex;
+  flex-direction: column;
+  will-change: transform;
+  /* анимация через translate3d — форсирует GPU-слой */
+}
+
+.rail__group {
+  writing-mode: vertical-rl;
+  text-orientation: mixed;
+
+  font-family: var(--font-display);
+  font-size: 15px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.85);
+
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 14px;
+
+  padding: 30px 0;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.rail__dot {
+  color: #ffffff;
+  font-size: 18px;
+  line-height: 1;
+  opacity: 0.85;
+}
+
+/* =========================================================
+   5. HERO
+   ========================================================= */
+.hero {
+  position: relative;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--gutter);
+}
+
+.hero__title {
+  font-family: var(--font-display);
+  font-size: clamp(48px, 8vw, 120px);
+  letter-spacing: 0.02em;
+  text-align: center;
+  text-transform: uppercase;
+  font-weight: 400;
+}
+
+.hero__scroll {
+  position: absolute;
+  bottom: 40px;
+  left: 50%;
+  transform: translateX(-50%);
+  animation: bounce 2s infinite;
+  color: var(--text);
+  opacity: 0.7;
+  transition: opacity 0.2s ease;
+}
+
+.hero__scroll:hover {
+  opacity: 1;
+}
+
+@keyframes bounce {
+  0%,
+  100% {
+    transform: translate(-50%, 0);
+  }
+  50% {
+    transform: translate(-50%, 10px);
+  }
+}
+
+/* =========================================================
+   6. ЭКВАЛАЙЗЕР
+   ========================================================= */
+.equalizer {
+  position: absolute;
+  left: 50%;
+  bottom: 140px;
+  transform: translateX(-50%);
+
+  display: flex;
+  align-items: flex-end;
+  gap: 10px;
+  height: 120px;
+  opacity: 0.85;
+}
+
+.equalizer__bar {
+  width: 8px;
+  background: #ffffff;
+  border-radius: 2px;
+  height: 20%;
+  transition: height 0.15s ease-out;
+  will-change: height;
+}
+
+/* =========================================================
+   7. ABOUT
+   ========================================================= */
+.about {
+  padding: 120px var(--gutter);
+}
+
+.about__inner {
+  max-width: var(--container);
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: 1.2fr 1fr;
+  gap: 60px;
+  align-items: center;
+}
+
+.about__image {
+  margin-left: -480px;
+}
+
+/* .about__image img {
+  width: 120%;
+  max-width: none;
+  height: auto;
+  filter: drop-shadow(0px 0px 25px rgba(255, 255, 255, 0.3));
+  will-change: filter;
+  transition: filter 0.15s ease-out;
+} */
+
+.about__title {
+  font-family: var(--font-display);
+  font-size: clamp(36px, 4vw, 56px);
+  letter-spacing: 0.02em;
+  margin-bottom: 20px;
+  text-transform: uppercase;
+  font-weight: 400;
+}
+
+.about__desc {
+  font-size: clamp(20px, 2vw, 32px);
+  line-height: 1.35;
+  color: var(--text);
+  margin-bottom: 48px;
+  max-width: 560px;
+}
+
+.about__stats {
+  font-size: clamp(18px, 1.8vw, 26px);
+  line-height: 1.4;
+  margin-bottom: 48px;
+}
+
+.about__stats li {
+  margin-bottom: 6px;
+}
+
+.about__values {
+  font-size: clamp(18px, 1.8vw, 26px);
+  line-height: 1.4;
+}
+
+/* =========================================================
+   8. ARTISTS
+   ========================================================= */
+.artists {
+  padding: 80px var(--gutter) 120px;
+}
+
+.artist-card {
+  display: block;
+  transition: transform 0.3s ease;
+}
+
+.artist-card:hover {
+  transform: translateY(-4px);
+}
+
+.artist-card__image {
+  aspect-ratio: 1 / 1;
+  overflow: hidden;
+  border-radius: 8px;
+  margin-bottom: 16px;
+  background: #1a1a1a;
+}
+
+.artist-card__image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.4s ease;
+}
+
+.artist-card:hover .artist-card__image img {
+  transform: scale(1.05);
+}
+
+.artist-card__name {
+  font-family: var(--font-display);
+  font-size: clamp(20px, 2vw, 28px);
+  letter-spacing: 0.02em;
+  font-weight: 400;
+  text-transform: uppercase;
+}
+
+/* ===== Reactive-подсветка карточки ===== */
+.artist-card__image {
+  aspect-ratio: 1 / 1;
+  overflow: hidden;
+  border-radius: 8px;
+  margin-bottom: 16px;
+  background: #1a1a1a;
+
+  position: relative; /* ← добавили */
+  isolation: isolate; /* ← добавили: изолируем контекст наложения */
+}
+
+/* Пятно света — поверх картинки, но внутри карточки */
+.artist-card__image::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 1;
+
+  /* Радиальный градиент с центром в точке курсора */
+  background: radial-gradient(
+    circle 180px at var(--mx, 50%) var(--my, 50%),
+    rgba(124, 58, 237, 0.45),
+    rgba(124, 58, 237, 0.15) 40%,
+    transparent 70%
+  );
+
+  opacity: 0;
+  transition: opacity 0.25s ease;
+}
+
+.artist-card:hover .artist-card__image::after {
+  opacity: 1;
+}
+/* =========================================================
+   9. MARQUEE
+   ========================================================= */
+.marquee {
+  background: var(--purple);
+  overflow: hidden;
+  padding: 16px 0;
+  white-space: nowrap;
+}
+
+.marquee__track {
+  display: inline-block;
+  animation: scroll-left 30s linear infinite;
+}
+
+.marquee__track span {
+  font-family: var(--font-display);
+  font-size: clamp(20px, 2vw, 32px);
+  letter-spacing: 0.05em;
+  margin: 0 24px;
+  text-transform: uppercase;
+}
+
+@keyframes scroll-left {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+/* =========================================================
+   10. PARTNERS
+   ========================================================= */
+.partners {
+  padding: 120px var(--gutter);
+}
+
+.partners__grid {
+  max-width: var(--container);
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+}
+
+.partners__item {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 32px;
+  border-right: 1px solid rgba(255, 255, 255, 0.15);
+  min-height: 80px;
+}
+
+.partners__item:last-child {
+  border-right: none;
+}
+
+.partners__item img {
+  max-height: 48px;
+  width: auto;
+  opacity: 0.9;
+  transition: opacity 0.2s ease;
+}
+
+.partners__item:hover img {
+  opacity: 1;
+}
+
+/* =========================================================
+   11. CONTACTS
+   ========================================================= */
+.contacts {
+  position: relative;
+  background: var(--purple);
+  padding: 120px var(--gutter) 160px;
+  margin-top: 80px;
+}
+
+.contacts__cut {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 120px;
+  transform: translateY(-100%);
+  pointer-events: none;
+}
+
+.contacts__cut svg {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+.contacts__inner {
+  max-width: 640px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.contact-btn {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 24px 32px;
+  background: #000;
+  color: var(--text);
+  border-radius: 8px;
+  font-size: 16px;
+  font-weight: 500;
+  transition:
+    background 0.2s ease,
+    transform 0.2s ease;
+}
+
+.contact-btn:hover {
+  background: #111;
+  transform: translateX(4px);
+}
+
+.contact-btn svg {
+  flex-shrink: 0;
+  opacity: 0.8;
+}
+
+/* =========================================================
+   12. АДАПТИВ
+   ========================================================= */
+@media (max-width: 1024px) {
+  :root {
+    --rail-width: 40px;
+  }
+
+  .about__inner {
+    grid-template-columns: 1fr;
+    gap: 48px;
+  }
+
+  .about__image {
+    margin-left: 0;
+  }
+
+  .about__image img {
+    width: 100%;
+  }
+
+  .rail__group {
+    font-size: 11px;
+  }
+
+  .partners__grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .partners__item {
+    border-right: none;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.15);
+    padding: 24px;
+  }
+
+  .partners__item:nth-child(odd) {
+    border-right: 1px solid rgba(255, 255, 255, 0.15);
+  }
+
+  .partners__item:nth-last-child(-n + 2) {
+    border-bottom: none;
+  }
+}
+
+@media (max-width: 768px) {
+  :root {
+    --gutter: 16px;
+    --rail-width: 0px;
+  }
+
+  body {
+    padding-left: 0;
+    padding-right: 0;
+  }
+
+  .rail {
+    display: none;
+  }
+
+  .about,
+  .artists,
+  .partners {
+    padding: 72px var(--gutter);
+  }
+
+  .section-title {
+    margin-bottom: 40px;
+  }
+
+
+  .partners__grid {
+    grid-template-columns: 1fr;
+  }
+
+  .partners__item {
+    border-right: none !important;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.15);
+    padding: 20px;
+  }
+
+  .partners__item:last-child {
+    border-bottom: none;
+  }
+
+  .contacts {
+    padding: 80px var(--gutter) 100px;
+  }
+
+  .contact-btn {
+    padding: 18px 20px;
+    font-size: 15px;
+  }
+
+  .contacts__cut {
+    height: 60px;
+  }
+
+  .marquee {
+    padding: 12px 0;
+  }
+}
+
+/* =========================================================
+   13. HEADER / МЕНЮ
+   ========================================================= */
+:root {
+  --header-h: 72px;
+}
+
+a:focus-visible,
+button:focus-visible,
+.carousel__track:focus-visible {
+  outline: 2px solid var(--purple-light);
+  outline-offset: 4px;
+}
+
+.header {
+  position: fixed;
+  top: 0;
+  left: var(--rail-width);
+  right: var(--rail-width);
+  height: var(--header-h);
+  z-index: 40; /* ниже rails (50), выше контента */
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 var(--gutter);
+  transition: transform 0.35s ease;
+}
+
+/* Подложка вынесена в ::before — backdrop-filter на самом .header
+   сломал бы position: fixed у мобильного меню внутри него */
+.header::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background: rgba(6, 6, 6, 0.72);
+  -webkit-backdrop-filter: blur(14px);
+  backdrop-filter: blur(14px);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.header--solid::before {
+  opacity: 1;
+}
+
+.header--hidden {
+  transform: translateY(-100%);
+}
+
+.header__logo {
+  font-family: var(--font-display);
+  font-size: 30px;
+  line-height: 1;
+  letter-spacing: 0.08em;
+}
+
+.nav {
+  display: flex;
+  align-items: center;
+  gap: clamp(24px, 3.5vw, 48px);
+}
+
+.nav__link {
+  position: relative;
+  padding: 8px 0;
+  font-size: 15px;
+  font-weight: 500;
+  color: var(--muted);
+  transition: color 0.2s ease;
+}
+
+.nav__link::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 2px;
+  height: 1px;
+  background: var(--purple-light);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.3s ease;
+}
+
+.nav__link:hover,
+.nav__link.is-active {
+  color: var(--text);
+}
+
+.nav__link:hover::after,
+.nav__link.is-active::after {
+  transform: scaleX(1);
+}
+
+.burger {
+  display: none;
+  position: relative;
+  z-index: 2;
+  width: 44px;
+  height: 44px;
+}
+
+.burger span {
+  position: absolute;
+  left: 10px;
+  right: 10px;
+  height: 2px;
+  background: var(--text);
+  transition:
+    top 0.3s ease,
+    transform 0.3s ease;
+}
+
+.burger span:nth-child(1) {
+  top: 18px;
+}
+
+.burger span:nth-child(2) {
+  top: 26px;
+}
+
+.burger[aria-expanded="true"] span:nth-child(1) {
+  top: 22px;
+  transform: rotate(45deg);
+}
+
+.burger[aria-expanded="true"] span:nth-child(2) {
+  top: 22px;
+  transform: rotate(-45deg);
+}
+
+body.menu-open {
+  overflow: hidden;
+}
+
+/* =========================================================
+   14. КАРУСЕЛЬ АРТИСТОВ
+   ========================================================= */
+.carousel {
+  --slide-w: clamp(240px, 28vw, 380px);
+  --slide-gap: clamp(16px, 2.5vw, 32px);
+
+  position: relative;
+  /* выходим за боковые отступы секции — карусель на всю ширину между rails */
+  margin-inline: calc(var(--gutter) * -1);
+}
+
+.carousel__track {
+  position: relative; /* offsetParent для расчёта позиции слайдов в JS */
+  display: flex;
+  gap: var(--slide-gap);
+  overflow-x: auto;
+  overscroll-behavior-x: contain;
+  scroll-snap-type: x mandatory;
+  scrollbar-width: none;
+  -webkit-overflow-scrolling: touch;
+  /* боковые поля = полэкрана минус полслайда → крайние слайды тоже встают по центру */
+  padding: 24px calc(50% - var(--slide-w) / 2) 40px;
+  cursor: grab;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+.carousel__track::-webkit-scrollbar {
+  display: none;
+}
+
+.carousel__track.is-dragging {
+  scroll-snap-type: none;
+  cursor: grabbing;
+}
+
+/* --d: 0 у центрального слайда, 1 у дальних. Выставляется из JS при скролле */
+.carousel__slide {
+  --d: 0;
+  flex: 0 0 var(--slide-w);
+  scroll-snap-align: center;
+  transform: scale(calc(1 - var(--d) * 0.16));
+  opacity: calc(1 - var(--d) * 0.55);
+  filter: grayscale(calc(var(--d) * 0.9));
+  will-change: transform, opacity;
+}
+
+/* Портретный кадр лучше смотрится в карусели, чем квадрат */
+.carousel__slide .artist-card__image {
+  aspect-ratio: 4 / 5;
+}
+
+.carousel__slide .artist-card__image img {
+  -webkit-user-drag: none;
+}
+
+.carousel__slide .artist-card__name {
+  text-align: center;
+}
+
+.carousel__controls {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 24px;
+}
+
+.carousel__arrow {
+  display: grid;
+  place-items: center;
+  width: 52px;
+  height: 52px;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  border-radius: 50%;
+  transition:
+    background 0.2s ease,
+    border-color 0.2s ease,
+    opacity 0.2s ease;
+}
+
+.carousel__arrow:hover:not(:disabled) {
+  background: var(--purple);
+  border-color: var(--purple);
+}
+
+.carousel__arrow:disabled {
+  opacity: 0.3;
+  cursor: default;
+}
+
+.carousel__dots {
+  display: flex;
+  align-items: center;
+}
+
+.carousel__dot {
+  box-sizing: content-box;
+  width: 8px;
+  height: 8px;
+  padding: 6px; /* увеличивает зону клика до 20px */
+  background: rgba(255, 255, 255, 0.3);
+  background-clip: content-box;
+  border-radius: 50%;
+  transition:
+    background-color 0.2s ease,
+    transform 0.2s ease;
+}
+
+.carousel__dot[aria-current="true"] {
+  background-color: var(--text);
+  transform: scale(1.4);
+}
+
+/* =========================================================
+   15. АДАПТИВ: МЕНЮ И КАРУСЕЛЬ
+   ========================================================= */
+@media (max-width: 768px) {
+  .carousel {
+    --slide-w: 68vw;
+  }
+
+  .burger {
+    display: block;
+  }
+
+  .header__logo {
+    position: relative;
+    z-index: 2;
+  }
+
+  .nav {
+    position: fixed;
+    inset: 0;
+    flex-direction: column;
+    justify-content: center;
+    gap: 28px;
+    background: rgba(6, 6, 6, 0.97);
+    opacity: 0;
+    visibility: hidden;
+    transition:
+      opacity 0.3s ease,
+      visibility 0.3s ease;
+  }
+
+  .nav.is-open {
+    opacity: 1;
+    visibility: visible;
+  }
+
+  .nav__link {
+    font-size: clamp(26px, 8vw, 38px);
+    font-weight: 600;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .header,
+  .header::before,
+  .nav,
+  .nav__link::after {
+    transition: none;
+  }
+}
