@@ -292,9 +292,8 @@ function initArtistCards() {
 
 /* =========================================================
    6. Меню (header)
-   - становится «стеклянным» после небольшого скролла
+   - стеклянная панель по центру, «линза» едет к активному пункту
    - прячется при скролле вниз, возвращается при скролле вверх
-   - подсвечивает пункт текущей секции
    - на мобильных — бургер и полноэкранное меню
    ========================================================= */
 function initHeader() {
@@ -302,6 +301,8 @@ function initHeader() {
   const nav = document.getElementById("nav");
   const burger = document.getElementById("burger");
   if (!header || !nav || !burger) return;
+
+  const lens = nav.querySelector(".nav__lens");
 
   // Пары «ссылка меню → секция»
   const items = [...nav.querySelectorAll(".nav__link")]
@@ -315,6 +316,7 @@ function initHeader() {
 
   let lastY = window.scrollY;
   let ticking = false;
+  let currentLink = null;
 
   function setMenu(open) {
     nav.classList.toggle("is-open", open);
@@ -322,6 +324,28 @@ function initHeader() {
     burger.setAttribute("aria-expanded", String(open));
     burger.setAttribute("aria-label", open ? "Закрыть меню" : "Открыть меню");
     if (open) header.classList.remove("header--hidden");
+  }
+
+  // Двигаем «линзу» под ссылку. При первом появлении — без анимации
+  function moveLens(link) {
+    if (!lens) return;
+
+    if (!link || mobileQuery.matches) {
+      lens.classList.remove("is-visible");
+      return;
+    }
+
+    const firstShow = !lens.classList.contains("is-visible");
+    if (firstShow) lens.style.transition = "none";
+
+    lens.style.setProperty("--lens-x", link.offsetLeft + "px");
+    lens.style.setProperty("--lens-w", link.offsetWidth + "px");
+
+    if (firstShow) {
+      void lens.offsetWidth; // применяем позицию до включения transition
+      lens.style.transition = "";
+    }
+    lens.classList.add("is-visible");
   }
 
   function updateActive() {
@@ -343,13 +367,17 @@ function initHeader() {
       if (isActive) link.setAttribute("aria-current", "true");
       else link.removeAttribute("aria-current");
     });
+
+    const link = current >= 0 ? items[current].link : null;
+    if (link !== currentLink) {
+      currentLink = link;
+      moveLens(link);
+    }
   }
 
   function onScroll() {
     ticking = false;
     const y = window.scrollY;
-
-    header.classList.toggle("header--solid", y > 40);
 
     if (!nav.classList.contains("is-open") && Math.abs(y - lastY) > 4) {
       if (y > lastY && y > 200) header.classList.add("header--hidden");
@@ -386,32 +414,57 @@ function initHeader() {
   // Если растянули окно до десктопа при открытом меню — закрываем
   mobileQuery.addEventListener("change", (e) => {
     if (!e.matches) setMenu(false);
+    moveLens(currentLink);
   });
+
+  // Ширина пунктов меняется после загрузки шрифта и при ресайзе
+  window.addEventListener("resize", () => moveLens(currentLink));
+  if (document.fonts && document.fonts.ready) {
+    document.fonts.ready.then(() => moveLens(currentLink));
+  }
 
   onScroll();
 }
 
 /* =========================================================
    7. Карусель артистов
-   Основа — нативный scroll-snap (свайп на телефоне работает сам).
-   JS добавляет: подсветку центрального слайда, стрелки, точки,
-   клавиатуру и перетаскивание мышью.
+   Трек двигаем сами через transform, без нативного scroll-snap.
+   Позиция — дробный «индекс слайда»; после отпускания к цели
+   ведёт критически задемпфированная пружина, поэтому и недосвайп,
+   и бросок заканчиваются плавно, без рывков.
    ========================================================= */
 function initArtistsCarousel() {
   const root = document.getElementById("artistsCarousel");
   if (!root) return;
 
+  const viewport = root.querySelector(".carousel__viewport");
   const track = root.querySelector(".carousel__track");
   const slides = [...root.querySelectorAll(".carousel__slide")];
   const prevBtn = root.querySelector(".carousel__arrow--prev");
   const nextBtn = root.querySelector(".carousel__arrow--next");
   const dotsBox = root.querySelector(".carousel__dots");
-  if (!track || !slides.length) return;
+  if (!viewport || !track || !slides.length) return;
 
   const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
+  const last = slides.length - 1;
 
-  let active = -1; // индекс слайда, ближайшего к центру
+  // ---------- Настройки (крути под себя) ----------
+  const STIFFNESS = 140; // жёсткость пружины: больше = быстрее доезжает
+  const DAMPING = 2 * Math.sqrt(STIFFNESS); // критическое затухание — без «болтанки»
+  const PROJECTION = 0.2; // сек: как далеко «летит» слайд после броска
+  const COMMIT = 0.15; // доля шага: дальше неё свайп засчитывается как переход
+  const EDGE_RESIST = 0.35; // сопротивление за крайними слайдами
+  const DRAG_START = 6; // px до начала перетаскивания
+  const MAX_VEL = 8; // потолок скорости, слайдов/сек
+
+  // ---------- Состояние ----------
+  let step = 1; // расстояние между центрами соседних слайдов, px
+  let pos = 0; // текущая позиция в «слайдах» (дробная)
+  let vel = 0; // скорость, слайдов/сек
+  let target = 0; // индекс, к которому едем
+  let active = -1; // слайд, ближайший к центру
   let rafId = null;
+  let lastTime = 0;
 
   // ---------- Точки ----------
   const dots = slides.map((_, i) => {
@@ -424,18 +477,13 @@ function initArtistsCarousel() {
     return dot;
   });
 
-  // ---------- Навигация ----------
-  function slideLeft(i) {
-    const s = slides[i];
-    return s.offsetLeft - (track.clientWidth - s.offsetWidth) / 2;
-  }
+  const clampIndex = (i) => Math.max(0, Math.min(last, i));
 
-  function goTo(i, smooth = true) {
-    const index = Math.max(0, Math.min(slides.length - 1, i));
-    track.scrollTo({
-      left: slideLeft(index),
-      behavior: smooth && !reduceMotion.matches ? "smooth" : "instant",
-    });
+  function measure() {
+    step =
+      slides.length > 1
+        ? slides[1].offsetLeft - slides[0].offsetLeft
+        : slides[0].offsetWidth;
   }
 
   function syncState() {
@@ -445,114 +493,198 @@ function initArtistsCarousel() {
       else d.removeAttribute("aria-current");
     });
     if (prevBtn) prevBtn.disabled = active <= 0;
-    if (nextBtn) nextBtn.disabled = active >= slides.length - 1;
+    if (nextBtn) nextBtn.disabled = active >= last;
   }
 
-  // ---------- Подсветка по расстоянию до центра ----------
-  function update() {
-    rafId = null;
-    const center = track.scrollLeft + track.clientWidth / 2;
-
-    let nearest = 0;
-    let nearestDist = Infinity;
+  function render() {
+    track.style.transform = `translate3d(${(-pos * step).toFixed(2)}px, 0, 0)`;
 
     slides.forEach((s, i) => {
-      const dist = Math.abs(s.offsetLeft + s.offsetWidth / 2 - center);
-      const d = Math.min(dist / s.offsetWidth, 1);
-      s.style.setProperty("--d", d.toFixed(3));
-
-      if (dist < nearestDist) {
-        nearestDist = dist;
-        nearest = i;
-      }
+      s.style.setProperty("--d", Math.min(Math.abs(i - pos), 1).toFixed(3));
     });
 
-    if (nearest !== active) {
-      active = nearest;
+    const idx = clampIndex(Math.round(pos));
+    if (idx !== active) {
+      active = idx;
       syncState();
     }
   }
 
-  track.addEventListener(
-    "scroll",
-    () => {
-      if (!rafId) rafId = requestAnimationFrame(update);
-    },
-    { passive: true },
-  );
+  // ---------- Пружина ----------
+  function stopLoop() {
+    if (rafId) cancelAnimationFrame(rafId);
+    rafId = null;
+  }
 
-  // ---------- Стрелки и клавиатура ----------
-  if (prevBtn) prevBtn.addEventListener("click", () => goTo(active - 1));
-  if (nextBtn) nextBtn.addEventListener("click", () => goTo(active + 1));
+  function tick(time) {
+    const dt = Math.min((time - lastTime) / 1000, 1 / 30);
+    lastTime = time;
 
-  track.addEventListener("keydown", (e) => {
-    if (e.key === "ArrowLeft") {
-      e.preventDefault();
-      goTo(active - 1);
-    } else if (e.key === "ArrowRight") {
-      e.preventDefault();
-      goTo(active + 1);
-    } else if (e.key === "Home") {
-      e.preventDefault();
-      goTo(0);
-    } else if (e.key === "End") {
-      e.preventDefault();
-      goTo(slides.length - 1);
+    const force = -STIFFNESS * (pos - target) - DAMPING * vel;
+    vel += force * dt;
+    pos += vel * dt;
+
+    if (Math.abs(pos - target) < 0.0005 && Math.abs(vel) < 0.005) {
+      pos = target;
+      vel = 0;
+      rafId = null;
+      render();
+      return;
     }
-  });
 
-  // ---------- Перетаскивание мышью (тач работает нативно) ----------
-  let isDown = false;
+    render();
+    rafId = requestAnimationFrame(tick);
+  }
+
+  function startLoop() {
+    if (rafId) return;
+    lastTime = performance.now();
+    rafId = requestAnimationFrame(tick);
+  }
+
+  function goTo(i, instant = false) {
+    target = clampIndex(i);
+
+    if (instant || reduceMotion.matches) {
+      stopLoop();
+      pos = target;
+      vel = 0;
+      render();
+      return;
+    }
+    startLoop();
+  }
+
+  // ---------- Перетаскивание (мышь, тач, стилус) ----------
+  let dragging = false;
   let moved = false;
+  let pointerId = null;
   let startX = 0;
-  let startScroll = 0;
+  let startPos = 0;
+  let startIndex = 0;
+  let lastX = 0;
+  let lastT = 0;
+  let dragVel = 0;
 
-  track.addEventListener("pointerdown", (e) => {
-    if (e.pointerType !== "mouse" || e.button !== 0) return;
-    isDown = true;
+  // За краями — «резиновое» сопротивление
+  function resist(p) {
+    if (p < 0) return p * EDGE_RESIST;
+    if (p > last) return last + (p - last) * EDGE_RESIST;
+    return p;
+  }
+
+  viewport.addEventListener("pointerdown", (e) => {
+    if (e.pointerType === "mouse" && e.button !== 0) return;
+
+    dragging = true;
     moved = false;
-    startX = e.clientX;
-    startScroll = track.scrollLeft;
+    pointerId = e.pointerId;
+    startX = lastX = e.clientX;
+    lastT = e.timeStamp;
+    startPos = pos;
+    startIndex = target;
+    dragVel = 0;
+
+    stopLoop(); // перехватываем слайд «на лету»
+    vel = 0;
   });
 
   window.addEventListener("pointermove", (e) => {
-    if (!isDown) return;
+    if (!dragging || e.pointerId !== pointerId) return;
+
     const dx = e.clientX - startX;
 
-    if (!moved && Math.abs(dx) > 5) {
+    if (!moved) {
+      if (Math.abs(dx) < DRAG_START) return;
       moved = true;
-      track.classList.add("is-dragging"); // отключает snap на время перетаскивания
+      viewport.classList.add("is-dragging");
+      // Захват только после порога — иначе обычный клик по ссылке сломается
+      try {
+        viewport.setPointerCapture(e.pointerId);
+      } catch (_) {}
     }
-    if (moved) track.scrollLeft = startScroll - dx;
+
+    pos = resist(startPos - dx / step);
+
+    // Сглаженная скорость в слайдах/сек (без учёта сопротивления)
+    const dt = (e.timeStamp - lastT) / 1000;
+    if (dt > 0) {
+      const inst = -(e.clientX - lastX) / step / dt;
+      dragVel = dragVel * 0.6 + inst * 0.4;
+    }
+    lastX = e.clientX;
+    lastT = e.timeStamp;
+
+    render();
   });
 
-  function endDrag() {
-    if (!isDown) return;
-    isDown = false;
+  function endDrag(e) {
+    if (!dragging || e.pointerId !== pointerId) return;
+    dragging = false;
+    viewport.classList.remove("is-dragging");
 
-    if (moved) {
-      track.classList.remove("is-dragging");
-      goTo(active); // доводим до ближайшего слайда
-      // click после mouseup ещё должен увидеть moved = true
-      setTimeout(() => {
-        moved = false;
-      }, 0);
+    // Просто тап — возобновляем движение к цели
+    if (!moved) {
+      goTo(target);
+      return;
     }
+
+    // Куда «упадёт» слайд с учётом броска
+    let next = Math.round(pos + dragVel * PROJECTION);
+
+    // Недосвайп: если потянули дальше COMMIT — всё равно листаем
+    const delta = pos - startIndex;
+    if (next === startIndex && Math.abs(delta) > COMMIT) {
+      next = startIndex + Math.sign(delta);
+    }
+
+    // Если перед отпусканием палец/мышь стояли — инерции нет
+    const stale = e.timeStamp - lastT > 80;
+    vel = stale ? 0 : Math.max(-MAX_VEL, Math.min(MAX_VEL, dragVel));
+
+    goTo(next);
+
+    // click после mouseup ещё должен увидеть moved = true
+    setTimeout(() => {
+      moved = false;
+    }, 0);
   }
 
   window.addEventListener("pointerup", endDrag);
   window.addEventListener("pointercancel", endDrag);
 
   // Нативный drag картинок/ссылок ломает перетаскивание
-  track.addEventListener("dragstart", (e) => e.preventDefault());
+  viewport.addEventListener("dragstart", (e) => e.preventDefault());
 
-  // Клик: после перетаскивания — игнорируем; по боковому слайду — центрируем,
-  // а не переходим по ссылке
-  track.addEventListener("click", (e) => {
+  // ---------- Горизонтальный скролл трекпадом ----------
+  let wheelTimer = null;
+
+  viewport.addEventListener(
+    "wheel",
+    (e) => {
+      if (Math.abs(e.deltaX) <= Math.abs(e.deltaY)) return; // вертикаль — странице
+
+      e.preventDefault();
+      stopLoop();
+      vel = 0;
+
+      pos = Math.max(-0.3, Math.min(last + 0.3, pos + (e.deltaX / step) * 0.8));
+      render();
+
+      clearTimeout(wheelTimer);
+      wheelTimer = setTimeout(() => goTo(Math.round(pos)), 90);
+    },
+    { passive: false },
+  );
+
+  // ---------- Клик: после перетаскивания игнорируем; по боковому слайду —
+  // центрируем вместо перехода по ссылке ----------
+  viewport.addEventListener("click", (e) => {
     if (moved) {
       e.preventDefault();
       return;
     }
+
     const slide = e.target.closest(".carousel__slide");
     if (!slide) return;
 
@@ -563,10 +695,31 @@ function initArtistsCarousel() {
     }
   });
 
-  // ---------- Resize и старт ----------
-  window.addEventListener("resize", () => goTo(active, false));
+  // ---------- Стрелки и клавиатура ----------
+  if (prevBtn) prevBtn.addEventListener("click", () => goTo(target - 1));
+  if (nextBtn) nextBtn.addEventListener("click", () => goTo(target + 1));
 
+  viewport.addEventListener("keydown", (e) => {
+    const keys = {
+      ArrowLeft: () => goTo(target - 1),
+      ArrowRight: () => goTo(target + 1),
+      Home: () => goTo(0),
+      End: () => goTo(last),
+    };
+    if (keys[e.key]) {
+      e.preventDefault();
+      keys[e.key]();
+    }
+  });
+
+  // ---------- Resize и старт ----------
+  window.addEventListener("resize", () => {
+    measure();
+    render();
+  });
+
+  measure();
   // Стартуем со среднего артиста — по бокам видны соседи
-  goTo(Math.floor((slides.length - 1) / 2), false);
-  update();
+  target = pos = Math.floor(last / 2);
+  render();
 }

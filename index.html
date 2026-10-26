@@ -9,7 +9,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
-      href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@300;400;500;600&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@300;400;500;600&family=Oswald:wght@500&display=swap"
       rel="stylesheet"
     />
 
@@ -75,9 +75,8 @@
     </aside>
     <!-- ================= HEADER / МЕНЮ ================= -->
     <header class="header" id="header">
-      <a class="header__logo" href="#hero" aria-label="Flow State Music — наверх">FSM</a>
-
       <nav class="nav" id="nav" aria-label="Основное меню">
+        <span class="nav__lens" aria-hidden="true"></span>
         <a class="nav__link" href="#about">О нас</a>
         <a class="nav__link" href="#artists">Артисты</a>
         <a class="nav__link" href="#partners">Партнёры</a>
@@ -139,12 +138,13 @@
           </ul>
 
           <p class="about__values">
-            Каждый артист лейбла —<br />
-            часть одной семьи<br />
-            Честность<br />
-            Открытость<br />
-            Осознанность
+            Каждый артист лейбла — часть одной семьи
           </p>
+          <ul class="about__principles">
+            <li>Честность</li>
+            <li>Открытость</li>
+            <li>Осознанность</li>
+          </ul>
         </div>
       </div>
     </section>
@@ -154,7 +154,14 @@
       <h2 class="section-title">Артисты</h2>
 
       <div class="carousel" id="artistsCarousel">
-        <ul class="carousel__track" tabindex="0" aria-label="Артисты лейбла">
+        <div
+          class="carousel__viewport"
+          tabindex="0"
+          role="region"
+          aria-roledescription="карусель"
+          aria-label="Артисты лейбла"
+        >
+        <ul class="carousel__track">
           <li class="carousel__slide">
             <a href="#" class="artist-card">
               <div class="artist-card__image">
@@ -180,6 +187,7 @@
             </a>
           </li>
         </ul>
+        </div>
 
         <div class="carousel__controls">
           <button class="carousel__arrow carousel__arrow--prev" type="button" aria-label="Предыдущий артист">
