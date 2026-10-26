@@ -8,6 +8,7 @@ document.addEventListener("DOMContentLoaded", () => {
   initEqualizer();
   initRails();
   initArtistCards();
+  initFooterYear();
   initHeader();
   initArtistsCarousel();
 });
@@ -260,34 +261,47 @@ function initRails() {
    Пятно света следует за курсором внутри карточки
    ========================================================= */
 function initArtistCards() {
-  const cards = document.querySelectorAll(".artist-card__image");
+  const cards = document.querySelectorAll(".carousel__slide .artist-card");
+  const finePointer = window.matchMedia("(hover: hover) and (pointer: fine)");
+  const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
+  if (!finePointer.matches || reduceMotion.matches) return;
 
   cards.forEach((card) => {
     let rafId = null;
-    let pendingX = 0;
-    let pendingY = 0;
+    let pointerX = 0;
+    let pointerY = 0;
 
-    function update() {
+    const reset = () => {
+      if (rafId) cancelAnimationFrame(rafId);
       rafId = null;
+      card.style.setProperty("--tilt-x", "0deg");
+      card.style.setProperty("--tilt-y", "0deg");
+      card.classList.remove("is-tilting");
+    };
 
+    card.addEventListener("pointermove", (event) => {
+      if (event.pointerType !== "mouse") return;
       const rect = card.getBoundingClientRect();
-      const x = ((pendingX - rect.left) / rect.width) * 100;
-      const y = ((pendingY - rect.top) / rect.height) * 100;
-
-      // Записываем в CSS-переменные — градиент сам перестроится
-      card.style.setProperty("--mx", x + "%");
-      card.style.setProperty("--my", y + "%");
-    }
-
-    card.addEventListener("mousemove", (e) => {
-      pendingX = e.clientX;
-      pendingY = e.clientY;
-
-      if (!rafId) {
-        rafId = requestAnimationFrame(update);
-      }
+      pointerX = (event.clientX - rect.left) / rect.width;
+      pointerY = (event.clientY - rect.top) / rect.height;
+      if (rafId) return;
+      rafId = requestAnimationFrame(() => {
+        rafId = null;
+        const rotateY = (pointerX - 0.5) * 8;
+        const rotateX = (0.5 - pointerY) * 7;
+        card.style.setProperty("--tilt-x", `${rotateX.toFixed(2)}deg`);
+        card.style.setProperty("--tilt-y", `${rotateY.toFixed(2)}deg`);
+        card.classList.add("is-tilting");
+      });
     });
+    card.addEventListener("pointerleave", reset);
+    card.addEventListener("blur", reset);
   });
+}
+
+function initFooterYear() {
+  const year = document.getElementById("footerYear");
+  if (year) year.textContent = String(new Date().getFullYear());
 }
 
 /* =========================================================
