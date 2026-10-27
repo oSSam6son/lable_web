@@ -3,6 +3,8 @@
    ========================================================= */
 
 document.addEventListener("DOMContentLoaded", () => {
+  initSmoothAnchors();
+  initSmoothWheel();
   initScrollDown();
   initHeroShadow();
   initEqualizer();
@@ -12,6 +14,68 @@ document.addEventListener("DOMContentLoaded", () => {
   initHeader();
   initArtistsCarousel();
 });
+
+
+/* =========================================================
+   Глобальный плавный скролл для всех внутренних якорных ссылок
+   (меню, контакты, кнопка «Наверх» и переходы между секциями)
+   ========================================================= */
+function initSmoothAnchors() {
+  const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
+
+  document.addEventListener("click", (event) => {
+    const link = event.target.closest('a[href^="#"]');
+    if (!link) return;
+
+    const hash = link.getAttribute("href");
+    if (!hash || hash === "#") return; // не трогаем ссылки-заглушки артистов
+
+    let target;
+    try {
+      target = document.querySelector(hash);
+    } catch (_) {
+      return;
+    }
+    if (!target) return;
+
+    event.preventDefault();
+    const header = document.getElementById("header");
+    const headerOffset = header ? Math.min(header.getBoundingClientRect().height, 96) : 0;
+    const targetTop = hash === "#top" ? 0 : window.scrollY + target.getBoundingClientRect().top - headerOffset - 12;
+
+    const destination = Math.max(0, targetTop);
+    if (window.flowStateLenis && !reduceMotion.matches) {
+      window.flowStateLenis.scrollTo(destination, { duration: 1.05 });
+    } else {
+      window.scrollTo({ top: destination, behavior: reduceMotion.matches ? "auto" : "smooth" });
+    }
+
+    if (window.location.hash !== hash) {
+      history.replaceState(null, "", hash);
+    }
+  });
+}
+
+/* =========================================================
+   Плавное колесо мыши по всей странице
+   Нативный wheel обычно перескакивает сразу; здесь инерция сглаживается.
+   ========================================================= */
+function initSmoothWheel() {
+  const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
+  if (reduceMotion.matches || typeof window.Lenis === "undefined") return;
+
+  // Lenis сглаживает именно колесо мыши, сохраняя естественное поведение
+  // тачпадов и клавиатуры. Не перехватываем wheel вручную.
+  window.flowStateLenis = new window.Lenis({
+    autoRaf: true,
+    duration: 1.05,
+    smoothWheel: true,
+    wheelMultiplier: 0.9,
+    touchMultiplier: 1.1,
+    anchors: false,
+    lerp: 0.085,
+  });
+}
 
 /* =========================================================
    1. Стрелка "скролл вниз" в Hero
@@ -38,10 +102,11 @@ function initScrollDown() {
     const maxScroll = document.documentElement.scrollHeight - windowHeight;
     targetScroll = Math.min(targetScroll, maxScroll);
 
-    window.scrollTo({
-      top: targetScroll,
-      behavior: "smooth",
-    });
+    if (window.flowStateLenis) {
+      window.flowStateLenis.scrollTo(targetScroll, { duration: 1.05 });
+    } else {
+      window.scrollTo({ top: targetScroll, behavior: "smooth" });
+    }
   });
 }
 
@@ -200,59 +265,11 @@ function initEqualizer() {
    4. Rails — бесшовный скролл через ручной цикл
    ========================================================= */
 function initRails() {
-  const rails = document.querySelectorAll(".rail");
-
-  rails.forEach((rail, railIndex) => {
-    const track = rail.querySelector(".rail__track");
-    const firstGroup = rail.querySelector(".rail__group");
-    if (!track || !firstGroup) return;
-
-    // ---------- Настройки ----------
-    const DURATION = 10000; // мс за одну копию
-    const DIRECTION = railIndex === 0 ? -1 : 1; // левая вверх, правая вниз
-
-    let groupHeight = 0;
-    let startTime = null;
-
-    function measure() {
-      groupHeight = Math.round(firstGroup.getBoundingClientRect().height);
-    }
-
-    function animate(time) {
-      if (startTime === null) startTime = time;
-
-      if (groupHeight === 0) {
-        requestAnimationFrame(animate);
-        return;
-      }
-
-      const elapsed = time - startTime;
-      const progress = (elapsed % DURATION) / DURATION;
-
-      let offset;
-      if (DIRECTION === -1) {
-        // Левая: 0 → -groupHeight (едет вверх)
-        offset = -progress * groupHeight;
-      } else {
-        // Правая: -groupHeight → 0 (едет вниз)
-        offset = -(1 - progress) * groupHeight;
-      }
-
-      track.style.transform = `translate3d(0, ${offset}px, 0)`;
-
-      requestAnimationFrame(animate);
-    }
-
-    const start = () => {
-      measure();
-      requestAnimationFrame(animate);
-    };
-
-    if (document.fonts && document.fonts.ready) {
-      document.fonts.ready.then(start);
-    } else {
-      window.addEventListener("load", start);
-    }
+  // Непрерывное движение боковых rails выполняется CSS-анимацией.
+  // Три одинаковые группы позволяют прокручивать трек бесшовно,
+  // без пересчёта высоты и сброса transform в каждом цикле.
+  document.querySelectorAll(".rail__track").forEach((track) => {
+    track.style.removeProperty("transform");
   });
 }
 

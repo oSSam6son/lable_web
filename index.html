@@ -91,7 +91,7 @@
         aria-expanded="false"
         aria-controls="nav"
       >
-        <span></span><span></span>
+        <span></span><span></span><span></span>
       </button>
     </header>
 
@@ -201,27 +201,13 @@
       </div>
     </section>
 
-    <!-- ================= MARQUEE ================= -->
-    <div class="marquee" aria-hidden="true">
-      <div class="marquee__track">
-        <span>БОЛЬШЕ О НАС</span>
-        <span>•</span>
-        <span>БОЛЬШЕ О НАС</span>
-        <span>•</span>
-        <span>БОЛЬШЕ О НАС</span>
-        <span>•</span>
-        <span>БОЛЬШЕ О НАС</span>
-        <span>•</span>
-        <span>БОЛЬШЕ О НАС</span>
-        <span>•</span>
-        <span>БОЛЬШЕ О НАС</span>
-        <span>•</span>
-        <span>БОЛЬШЕ О НАС</span>
-        <span>•</span>
-        <span>БОЛЬШЕ О НАС</span>
-        <span>•</span>
-      </div>
-    </div>
+    <!-- ================= MARQUEE / ПЕРЕХОД К КОНТАКТАМ ================= -->
+    <a class="marquee" href="#contacts" aria-label="Больше о нас — перейти к контактам">
+      <span class="marquee__track" aria-hidden="true">
+        <span class="marquee__content">БОЛЬШЕ О НАС <i>●</i> БОЛЬШЕ О НАС <i>●</i> БОЛЬШЕ О НАС <i>●</i> БОЛЬШЕ О НАС <i>●</i>&nbsp;</span>
+        <span class="marquee__content">БОЛЬШЕ О НАС <i>●</i> БОЛЬШЕ О НАС <i>●</i> БОЛЬШЕ О НАС <i>●</i> БОЛЬШЕ О НАС <i>●</i>&nbsp;</span>
+      </span>
+    </a>
 
     <!-- ================= PARTNERS ================= -->
     <section class="partners" id="partners">
@@ -246,84 +232,42 @@
 
     <!-- ================= CONTACTS ================= -->
     <section class="contacts" id="contacts">
-      <!-- Волнистый срез сверху -->
-      <div class="contacts__cut" aria-hidden="true">
-        <svg viewBox="0 0 1440 120" preserveAspectRatio="none">
-          <path d="M0,0 L720,100 L1440,0 L1440,0 L0,0 Z" fill="#000000" />
-        </svg>
-      </div>
-
       <div class="contacts__inner">
-        <a class="contact-btn" href="#">
-          <span>Telegram-канал</span>
-          <svg
-            width="20"
-            height="20"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            stroke-width="2"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-          >
-            <polyline points="9 18 15 12 9 6"></polyline>
-          </svg>
-        </a>
+        <div class="contacts__heading">
+          <span class="contacts__eyebrow"><i aria-hidden="true"></i> FLOW STATE MUSIC / CONTACT</span>
+          <h2 class="section-title contacts__title">НАПИШИТЕ <span>НАМ</span></h2>
+          <p class="contacts__intro">Открыты новым артистам, партнёрам и смелым идеям. Выбери направление — и начнём разговор.</p>
+        </div>
 
-        <a class="contact-btn" href="#">
-          <span>Менеджер telegram</span>
-          <svg
-            width="20"
-            height="20"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            stroke-width="2"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-          >
-            <polyline points="9 18 15 12 9 6"></polyline>
-          </svg>
-        </a>
-
-        <a class="contact-btn" href="#">
-          <span>Студия звукозаписи</span>
-          <svg
-            width="20"
-            height="20"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            stroke-width="2"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-          >
-            <polyline points="9 18 15 12 9 6"></polyline>
-          </svg>
-        </a>
+        <div class="contacts__grid">
+          <a class="contact-btn" href="#" aria-label="Telegram-канал — ссылка пока не настроена">
+            <span class="contact-btn__number">01 / MEDIA</span>
+            <span class="contact-btn__main"><strong>Telegram-канал</strong><small>Новости, релизы и жизнь лейбла</small></span>
+            <span class="contact-btn__arrow" aria-hidden="true">&gt;</span>
+          </a>
+          <a class="contact-btn" href="#" aria-label="Менеджер Telegram — ссылка пока не настроена">
+            <span class="contact-btn__number">02 / BUSINESS</span>
+            <span class="contact-btn__main"><strong>Менеджер в Telegram</strong><small>Сотрудничество и предложения</small></span>
+            <span class="contact-btn__arrow" aria-hidden="true">&gt;</span>
+          </a>
+          <a class="contact-btn" href="#" aria-label="Студия звукозаписи — ссылка пока не настроена">
+            <span class="contact-btn__number">03 / STUDIO</span>
+            <span class="contact-btn__main"><strong>Студия звукозаписи</strong><small>Запись, звук и продакшн</small></span>
+            <span class="contact-btn__arrow" aria-hidden="true">&gt;</span>
+          </a>
+        </div>
+        <div class="contacts__bottomline"><span>НЕ ЖДИ ИДЕАЛЬНОГО МОМЕНТА.</span><span>СОЗДАЙ ЕГО. <b>&gt;</b></span></div>
       </div>
     </section>
 
-    <!-- ================= FOOTER ================= -->
-    <footer class="site-footer">
-      <div class="site-footer__top">
-        <a class="site-footer__brand" href="#top" aria-label="FLOW STATE MUSIC — наверх">
-          <span class="site-footer__mark">FS<span>®</span></span>
-          <span class="site-footer__brand-name">FLOW STATE<br />MUSIC</span>
-        </a>
-        <p class="site-footer__note">Музыка начинается<br />с собственного состояния.</p>
-        <a class="site-footer__top-link" href="#top">
-          <span>НАВЕРХ</span>
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 19V5M5 12l7-7 7 7" /></svg>
-        </a>
-      </div>
-      <div class="site-footer__bottom">
-        <span>© <span id="footerYear">2026</span> FLOW STATE MUSIC</span>
-        <span class="site-footer__status"><i aria-hidden="true"></i> INDEPENDENT MUSIC LABEL</span>
-        <a href="#contacts">СВЯЗАТЬСЯ С НАМИ ↗</a>
-      </div>
-    </footer>
+    <!-- Только юридические сведения оставлены внизу страницы -->
+    <div class="legal-strip" aria-label="Юридические сведения">
+      <p class="legal-strip__name">ООО «ФЛОУ СТЭЙТ»</p>
+      <p>ОГРН 1257700071452</p>
+      <p>Юридический адрес: 129085, г. Москва, вн. тер. г. муниципальный округ Останкинский, пр-кт Мира, д. 95, помещ. 29</p>
+    </div>
 
+    <script src="https://unpkg.com/lenis@1.3.11/dist/lenis.min.js"></script>
     <script src="script.js"></script>
   </body>
 </html>
