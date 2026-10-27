@@ -9,6 +9,7 @@ document.addEventListener("DOMContentLoaded", () => {
   initHeroShadow();
   initEqualizer();
   initRails();
+  initSeamlessMarquee();
   initArtistCards();
   initFooterYear();
   initHeader();
@@ -265,12 +266,40 @@ function initEqualizer() {
    4. Rails — бесшовный скролл через ручной цикл
    ========================================================= */
 function initRails() {
-  // Непрерывное движение боковых rails выполняется CSS-анимацией.
-  // Три одинаковые группы позволяют прокручивать трек бесшовно,
-  // без пересчёта высоты и сброса transform в каждом цикле.
+  // Двигаем rail ровно на высоту ОДНОЙ копии, а не на округлённую долю
+  // высоты всего трека. Это исключает микроскачок в точке повтора.
   document.querySelectorAll(".rail__track").forEach((track) => {
-    track.style.removeProperty("transform");
+    const group = track.querySelector(".rail__group");
+    if (!group) return;
+
+    const measure = () => {
+      const distance = group.getBoundingClientRect().height;
+      if (distance > 0) track.style.setProperty("--rail-distance", `${distance}px`);
+    };
+
+    measure();
+    if ("ResizeObserver" in window) new ResizeObserver(measure).observe(group);
+    if (document.fonts && document.fonts.ready) document.fonts.ready.then(measure);
+    window.addEventListener("resize", measure, { passive: true });
   });
+}
+
+function initSeamlessMarquee() {
+  const track = document.querySelector(".marquee__track");
+  const firstCopy = track && track.querySelector(".marquee__content");
+  if (!track || !firstCopy) return;
+
+  // Измеряем ширину первой копии и перемещаем строку ровно на это расстояние.
+  // Вторая копия занимает её место без пустого промежутка.
+  const measure = () => {
+    const distance = firstCopy.getBoundingClientRect().width;
+    if (distance > 0) track.style.setProperty("--marquee-distance", `${distance}px`);
+  };
+
+  measure();
+  if ("ResizeObserver" in window) new ResizeObserver(measure).observe(firstCopy);
+  if (document.fonts && document.fonts.ready) document.fonts.ready.then(measure);
+  window.addEventListener("resize", measure, { passive: true });
 }
 
 /* =========================================================
@@ -477,6 +506,7 @@ function initArtistsCarousel() {
   if (!viewport || !track || !slides.length) return;
 
   const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
+  const mobilePerformance = window.matchMedia("(max-width: 768px), (pointer: coarse)");
   const last = slides.length - 1;
 
   // ---------- Настройки (крути под себя) ----------
@@ -530,9 +560,13 @@ function initArtistsCarousel() {
   function render() {
     track.style.transform = `translate3d(${(-pos * step).toFixed(2)}px, 0, 0)`;
 
-    slides.forEach((s, i) => {
-      s.style.setProperty("--d", Math.min(Math.abs(i - pos), 1).toFixed(3));
-    });
+    // На телефонах не пересчитываем фильтры и scale всех карточек на каждом
+    // событии касания: это провоцировало repaint и ощущение 30 FPS.
+    if (!mobilePerformance.matches) {
+      slides.forEach((s, i) => {
+        s.style.setProperty("--d", Math.min(Math.abs(i - pos), 1).toFixed(3));
+      });
+    }
 
     const idx = clampIndex(Math.round(pos));
     if (idx !== active) {
@@ -576,6 +610,20 @@ function initArtistsCarousel() {
   function goTo(i, instant = false) {
     target = clampIndex(i);
 
+    if (mobilePerformance.matches) {
+      // Нативный compositor transition на мобильных вместо JS-пружины.
+      // Во время самого свайпа transition отключается, чтобы палец и карточка
+      // двигались синхронно; после отпускания браузер плавно доводит слайд.
+      stopLoop();
+      pos = target;
+      vel = 0;
+      if (instant || reduceMotion.matches) track.classList.remove("is-settling");
+      else track.classList.add("is-settling");
+      render();
+      return;
+    }
+
+    track.classList.remove("is-settling");
     if (instant || reduceMotion.matches) {
       stopLoop();
       pos = target;
@@ -609,6 +657,7 @@ function initArtistsCarousel() {
 
     dragging = true;
     moved = false;
+    track.classList.remove("is-settling");
     pointerId = e.pointerId;
     startX = lastX = e.clientX;
     lastT = e.timeStamp;
@@ -747,6 +796,10 @@ function initArtistsCarousel() {
   window.addEventListener("resize", () => {
     measure();
     render();
+  });
+
+  track.addEventListener("transitionend", (event) => {
+    if (event.propertyName === "transform") track.classList.remove("is-settling");
   });
 
   measure();

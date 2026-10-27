@@ -1942,3 +1942,52 @@ body.menu-open {
   }
 }
 
+
+/* =========================================================
+   23. Бесшовные текстовые циклы и производительность мобильной карусели
+   ========================================================= */
+.rail__track {
+  animation-name: rail-exact-loop !important;
+  animation-duration: var(--rail-duration, 10s) !important;
+  animation-timing-function: linear !important;
+  animation-iteration-count: infinite !important;
+}
+.rail--right .rail__track { animation-direction: reverse !important; }
+@keyframes rail-exact-loop {
+  from { transform: translate3d(0, 0, 0); }
+  to { transform: translate3d(0, calc(0px - var(--rail-distance, 33.333%)), 0); }
+}
+
+.marquee__track {
+  animation-name: marquee-exact-loop !important;
+  animation-timing-function: linear !important;
+  animation-iteration-count: infinite !important;
+}
+@keyframes marquee-exact-loop {
+  from { transform: translate3d(0, 0, 0); }
+  to { transform: translate3d(calc(0px - var(--marquee-distance, 50%)), 0, 0); }
+}
+
+/* На мобильных двигаем только композитный слой трека. Фильтры и scale
+   не пересчитываются на каждом кадре свайпа. */
+.carousel__track { transform: translate3d(0, 0, 0); }
+.carousel__track.is-settling {
+  transition: transform 380ms cubic-bezier(.22, .61, .36, 1);
+}
+@media (max-width: 768px), (pointer: coarse) {
+  .carousel__track { will-change: transform; }
+  .carousel__slide { transform: none !important; }
+  .carousel__slide .artist-card__image img { filter: none !important; }
+  .carousel__slide .artist-card__name { opacity: 1 !important; }
+  .carousel__slide .artist-card { transform: translateZ(0); }
+}
+
+/* На телефоне эквалайзер компактнее, с меньшим межполосным интервалом. */
+@media (max-width: 768px) {
+  .equalizer {
+    width: min(72vw, 320px);
+    justify-content: center;
+    gap: clamp(2px, 1vw, 5px);
+  }
+  .equalizer__bar { flex: 0 0 clamp(3px, 1vw, 5px); width: clamp(3px, 1vw, 5px); }
+}
