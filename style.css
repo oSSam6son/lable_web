@@ -93,7 +93,6 @@ body::after {
   mix-blend-mode: overlay;
 }
 
-/* Общие заголовки секций */
 .section-title {
   font-family: var(--font-display);
   font-size: clamp(32px, 4vw, 56px);
@@ -117,7 +116,6 @@ body::after {
   width: var(--rail-width);
   z-index: 50;
   overflow: hidden;
-  /* rotate ВЕСЬ rail целиком, а не группу — устраняет subpixel-дёрг */
   transform: rotate(180deg);
   border-left: 1px solid #fff;
   border-right: 1px solid #fff;
@@ -135,7 +133,6 @@ body::after {
   display: flex;
   flex-direction: column;
   will-change: transform;
-  /* анимация через translate3d — форсирует GPU-слой */
 }
 
 .rail__group {
@@ -179,7 +176,6 @@ body::after {
 
 .hero__title {
   font-family: var(--font-display);
-  /* Увеличили заголовок примерно в 1,5 раза относительно исходного размера */
   font-size: clamp(72px, 12vw, 180px);
   line-height: 0.92;
   letter-spacing: 0.02em;
@@ -276,7 +272,6 @@ body::after {
   -webkit-user-drag: none;
 }
 
-/* Блик по графике Flow State: мягкий диагональный проблеск, как на полированном стекле */
 .about__image::after {
   content: "";
   position: absolute;
@@ -400,11 +395,9 @@ body::after {
   margin-bottom: 16px;
   background: #1a1a1a;
 
-  position: relative; /* ← добавили */
-  isolation: isolate; /* ← добавили: изолируем контекст наложения */
+  position: relative;
+  isolation: isolate;
 }
-
-/* Пятно света — поверх картинки, но внутри карточки */
 .artist-card__image::after {
   content: "";
   position: absolute;
@@ -412,7 +405,6 @@ body::after {
   pointer-events: none;
   z-index: 1;
 
-  /* Радиальный градиент с центром в точке курсора */
   background: radial-gradient(
     circle 180px at var(--mx, 50%) var(--my, 50%),
     rgba(124, 58, 237, 0.45),
@@ -675,8 +667,6 @@ body::after {
     inset 0 -1px 0 rgba(255, 255, 255, 0.06), 0 14px 36px rgba(0, 0, 0, 0.35);
 }
 
-/* Мягкое фиолетовое свечение за контентом: стеклу нужно что преломлять.
-   Фиксированное — стекло «ловит» его при любом скролле */
 body::before {
   content: "";
   position: fixed;
@@ -716,7 +706,6 @@ body::before {
   box-shadow: var(--glass-shadow);
 }
 
-/* Блик + «ободок» для крупных стеклянных панелей */
 .carousel__slide .artist-card,
 .about__content {
   position: relative;
@@ -780,12 +769,12 @@ button:focus-visible,
   left: var(--rail-width);
   right: var(--rail-width);
   height: var(--header-h);
-  z-index: 40; /* ниже rails (50), выше контента */
+  z-index: 40;
   display: flex;
   align-items: center;
   justify-content: center;
   padding: 0 var(--gutter);
-  pointer-events: none; /* шапка не перехватывает клики вокруг панели */
+  pointer-events: none;
   transition: transform 0.35s ease;
 }
 
@@ -803,7 +792,6 @@ button:focus-visible,
   pointer-events: auto;
 }
 
-/* Подвижная «линза» под активным пунктом */
 .nav__lens {
   position: absolute;
   top: 6px;
@@ -909,11 +897,9 @@ body.menu-open {
   --slide-gap: clamp(20px, 3vw, 40px);
 
   position: relative;
-  /* выходим за боковые отступы секции — карусель на всю ширину между rails */
   margin-inline: calc(var(--gutter) * -1);
 }
 
-/* Свечение за центральной карточкой */
 .carousel::before {
   content: "";
   position: absolute;
@@ -936,9 +922,8 @@ body.menu-open {
   position: relative;
   z-index: 1;
   overflow: hidden;
-  /* запас сверху и снизу, чтобы не обрезались тени стекла */
   padding: 36px 0 48px;
-  touch-action: pan-y; /* вертикальный скролл страницы — нативный, горизонталь — наша */
+  touch-action: pan-y;
   cursor: grab;
   user-select: none;
   -webkit-user-select: none;
@@ -949,17 +934,13 @@ body.menu-open {
 }
 
 .carousel__track {
-  position: relative; /* offsetParent для расчёта шага в JS */
+  position: relative;
   display: flex;
   gap: var(--slide-gap);
-  /* первый слайд встаёт по центру */
   padding-inline: calc(50% - var(--slide-w) / 2);
   will-change: transform;
 }
 
-/* --d: 0 у центрального слайда, 1 у дальних. Выставляется из JS.
-   Прозрачность и filter на самом слайде НЕ ставим: они ломают
-   backdrop-filter у дочернего стекла. Тускнеют только фото и подпись */
 .carousel__slide {
   --d: 0;
   flex: 0 0 var(--slide-w);
@@ -973,7 +954,7 @@ body.menu-open {
 }
 
 .carousel__slide .artist-card__image {
-  aspect-ratio: 4 / 5; /* портретный кадр */
+  aspect-ratio: 4 / 5;
   margin-bottom: 12px;
   border-radius: 22px;
 }
@@ -1028,7 +1009,7 @@ body.menu-open {
   box-sizing: content-box;
   width: 8px;
   height: 8px;
-  padding: 6px; /* зона клика 20px */
+  padding: 6px;
   background: rgba(255, 255, 255, 0.3);
   background-clip: content-box;
   border-radius: 50%;
@@ -1045,7 +1026,6 @@ body.menu-open {
 /* =========================================================
    16. ТИПОГРАФИКА И ТЕКСТОВЫЕ ПОДЛОЖКИ
    ========================================================= */
-/* Кириллица в заголовках берётся из Oswald (500), латиница — Bebas Neue */
 .hero__title,
 .about__title,
 .section-title,
@@ -1179,7 +1159,6 @@ body.menu-open {
     display: block;
   }
 
-  /* Меню — полноэкранный стеклянный оверлей */
   .nav {
     position: fixed;
     inset: 0;
@@ -1255,7 +1234,6 @@ body.menu-open {
   }
 }
 
-/* Компактнее карусель, при этом оставляем воздух вокруг карточек */
 .carousel {
   --slide-gap: clamp(12px, 1.7vw, 24px);
 }
@@ -1292,7 +1270,6 @@ body.menu-open {
   border-color: rgba(255, 255, 255, 0.34);
 }
 
-/* Убираем старое фиолетовое пятно, следовавшее за курсором */
 .artist-card__image::after {
   display: none !important;
 }
@@ -1306,7 +1283,6 @@ body.menu-open {
   transform: scale(1.045);
 }
 
-/* Бегущая строка — более редакционный вид: тонкие линии, акценты и мягкий fade по краям */
 .marquee {
   position: relative;
   isolation: isolate;
@@ -1363,7 +1339,6 @@ body.menu-open {
   animation-play-state: paused;
 }
 
-/* Настоящий нижний колонтитул вместо резкого завершения страницы */
 .site-footer {
   position: relative;
   padding: 42px var(--gutter) 22px;
@@ -1531,8 +1506,6 @@ body.menu-open {
 /* =========================================================
    19. ОБНОВЛЕНИЕ: hover-подложка, контакты, marquee и legal strip
    ========================================================= */
-/* Явный hover-эффект для подложки/графики в блоке «О нас».
-   Подсветка появляется сразу, затем по диагонали проходит блик. */
 .about__image {
   position: relative;
   isolation: isolate;
@@ -1624,7 +1597,6 @@ body.menu-open {
   }
 }
 
-/* Контакты: тёмная секция в едином визуальном языке с карточками артистов */
 .contacts {
   position: relative;
   margin-top: 0;
@@ -1821,7 +1793,6 @@ body.menu-open {
   font-size: 15px;
 }
 
-/* Бегущая строка теперь является полноценной ссылкой на контакты */
 .marquee {
   position: relative;
   display: flex;
@@ -1934,7 +1905,6 @@ body.menu-open {
   outline-offset: -4px;
 }
 
-/* Убираем декоративный футер; юридические сведения остаются отдельной узкой строкой */
 .site-footer {
   display: none !important;
 }
@@ -2022,7 +1992,6 @@ body.menu-open {
 /* =========================================================
    20. ABOUT SHIMMER, MINIMAL MARQUEE LENS & MOBILE POLISH
    ========================================================= */
-/* Блик относится к самой секции About — изображение не анимируем и не меняем. */
 .about {
   position: relative;
   isolation: isolate;
@@ -2083,7 +2052,6 @@ body.menu-open {
   }
 }
 
-/* Простая бесконечная строка с увеличительным стеклом у курсора */
 .marquee {
   min-height: 88px;
   padding: 0;
@@ -2195,7 +2163,6 @@ body.menu-open {
   outline-offset: -3px;
 }
 
-/* На телефоне — компактная центральная liquid-glass-плашка из трёх полос */
 @media (max-width: 768px) {
   .header {
     left: 0;
@@ -2417,7 +2384,6 @@ body.menu-open {
     animation-duration: 60s !important;
   }
 }
-/* Keep the ticker continuous on hover; override legacy marquee hover rules. */
 .marquee:hover .marquee__track {
   animation-play-state: running !important;
 }
@@ -2454,7 +2420,7 @@ body.menu-open {
   top: -30%;
   bottom: -30%;
   left: -24%;
-  width: 13%; /* тонкая полоска блика */
+  width: 13%;
   pointer-events: none;
   opacity: 0;
   transform: skewX(-20deg);
@@ -2483,7 +2449,6 @@ body.menu-open {
   }
 }
 
-/* Бегущая строка: без лупы, текст строго по центру по вертикали. */
 .marquee {
   display: flex;
   align-items: center;
@@ -2519,7 +2484,6 @@ body.menu-open {
   animation-play-state: running !important;
 }
 
-/* Контакты: простая угловая скобка вместо декоративной диагональной стрелки. */
 .contact-btn__arrow {
   border: 0;
   border-radius: 0;
@@ -2552,8 +2516,6 @@ body.menu-open {
 /* =========================================================
    22. Точечные исправления: блик, бесшовные rails, центр карусели
    ========================================================= */
-/* Одна копия текста проходит за прежние 10 секунд; повторяющиеся
-   группы имеют одинаковую высоту, поэтому цикл не даёт рывка. */
 .rail__track {
   animation: rail-seamless-scroll var(--rail-duration, 10s) linear infinite;
   transform: translate3d(0, 0, 0);
@@ -2571,8 +2533,6 @@ body.menu-open {
   }
 }
 
-/* Явно центрируем всю область карусели относительно экрана телефона,
-   а не относительно внутренней области с боковыми padding секции. */
 @media (max-width: 768px) {
   .carousel {
     width: calc(100% + 2 * var(--gutter));
@@ -2687,7 +2647,6 @@ body.menu-open {
   }
 }
 
-/* На телефонах rails скрыты — не создаём для них лишние слои. */
 @media (max-width: 768px) {
   .rail__track {
     animation: none !important;
@@ -2695,7 +2654,6 @@ body.menu-open {
   }
 }
 
-/* Desktop scale chosen by the site owner */
 @media (min-width: 769px) {
   html {
     zoom: 1.15;
@@ -2871,7 +2829,6 @@ body.menu-open {
     gap: 5px;
     max-width: 100%;
     min-width: 0;
-    /* Логотипы не должны вылезать за карточку */
     overflow: hidden;
     padding: 0 2px;
   }
@@ -2950,7 +2907,6 @@ body.menu-open {
   min-height: 100%;
 }
 
-/* Убиваем декоративные псевдоэлементы базового стекла */
 .about__content#aboutFlipCard::before,
 .about__content#aboutFlipCard::after {
   display: none !important;
@@ -2967,7 +2923,6 @@ body.menu-open {
   will-change: transform;
 }
 
-/* Диагональный переворот */
 .about__content#aboutFlipCard.is-flipped .about__flip-inner {
   transform: rotateY(180deg) rotateZ(3deg);
 }
@@ -2981,7 +2936,6 @@ body.menu-open {
   overflow: hidden;
   -webkit-backface-visibility: hidden;
   backface-visibility: hidden;
-  /* стало: */
   background:
     linear-gradient(
       135deg,
@@ -3011,7 +2965,6 @@ body.menu-open {
   z-index: 2;
 }
 
-/* Серебристая обратная сторона */
 .about__face--back {
   z-index: 1;
   transform: rotateY(180deg);
@@ -3029,7 +2982,6 @@ body.menu-open {
   backdrop-filter: none;
 }
 
-/* Кнопка переворота — правый верхний угол */
 .about__flip-button {
   position: absolute;
   z-index: 10;
@@ -3076,8 +3028,6 @@ body.menu-open {
   z-index: 3;
   pointer-events: none;
   opacity: 0;
-  /* mix-blend-mode УБРАН — он создаёт compositing-слой
-     и провоцирует blur от backdrop-filter при появлении */
   background-image: linear-gradient(
     110deg,
     transparent 0%,
@@ -3115,7 +3065,6 @@ body.menu-open {
   }
 }
 
-/* Блик не играет на обратной стороне */
 .about__content#aboutFlipCard.is-flipped .about__face--front::after {
   opacity: 0 !important;
   animation: none !important;
@@ -3146,8 +3095,6 @@ body.menu-open {
   }
 }
 
-/* Подъём карточки About при наведении — только translateY, без scale.
-   translateY compositor делает без пересчёта растра → blur не появляется. */
 @media (hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference) {
   .about__content#aboutFlipCard {
     transition:
@@ -3169,28 +3116,18 @@ body.menu-open {
    MOBILE PERFORMANCE — отключаем всё дорогое на телефоне
    ========================================================= */
 @media (max-width: 768px), (pointer: coarse) {
-  /* 1. Убираем зерно (body::after) — это SVG-фильтр на весь экран,
-     каждый кадр при скролле пересчитывается. На мобилке это ~5-10 fps. */
   body::after {
     display: none !important;
   }
 
-  /* 2. Убираем фиксированное фиолетовое свечение (body::before).
-     position: fixed + radial-gradient + большой размер = дорогой paint
-     при каждом скролле. На мобилке заметно лагает. */
   body::before {
     display: none !important;
   }
 
-  /* 3. Убираем blur-свечение за центральной карточкой карусели (.carousel::before).
-     filter: blur(30px) на большой площади — 20-30мс на кадр. */
   .carousel::before {
     display: none !important;
   }
 
-  /* 4. Убираем все backdrop-filter на мобилке.
-     Blur фона под элементом — самая тяжёлая операция в CSS на GPU мобилки.
-     Заменяем на статичные полупрозрачные фоны (визуально почти то же). */
   .nav,
   .carousel__arrow,
   .carousel__slide .artist-card,
@@ -3228,9 +3165,6 @@ body.menu-open {
     ) !important;
   }
 
-  /* 5. Эффекты при hover не нужны на тач-устройствах, но некоторые
-     правила всё же срабатывают через :hover после тапа.
-     Убираем трансформы, которые провоцируют repaint. */
   .partners__item:hover {
     transform: none !important;
     box-shadow:
@@ -3247,8 +3181,6 @@ body.menu-open {
     transition: none !important;
   }
 
-  /* 6. Отключаем сложные 3D-трансформы на карточках артистов.
-     perspective + preserve-3d + tilt из JS = дорого при скролле. */
   .carousel__slide .artist-card {
     transform: none !important;
     transform-style: flat !important;
@@ -3259,15 +3191,11 @@ body.menu-open {
     perspective: none !important;
   }
 
-  /* 7. Убираем анимацию блика карточки About — на мобилке
-     background-position анимация = перерисовка всего слоя. */
   .about__content#aboutFlipCard.glint-active .about__face--front::after {
     animation: none !important;
     opacity: 0 !important;
   }
 
-  /* 8. Убираем длинные тени (box-shadow с большим blur) —
-     они дорого стоят при каждом repaint. */
   .about__face {
     box-shadow:
       inset 0 1px 0 rgba(255, 255, 255, 0.35),
@@ -3280,9 +3208,6 @@ body.menu-open {
       0 8px 20px rgba(0, 0, 0, 0.2) !important;
   }
 
-  /* 9. Убираем will-change на всех слоях, где он не нужен.
-     На мобилке каждый will-change = лишний GPU-слой в памяти,
-     а памяти на телефоне мало. Оставляем только там, где реально нужен. */
   .carousel__slide .artist-card,
   .about__face,
   .marquee__track,
@@ -3290,27 +3215,20 @@ body.menu-open {
     will-change: auto !important;
   }
 
-  /* Оставляем will-change только у карусели трека — там он критичен */
   .carousel__track {
     will-change: transform !important;
   }
 
-  /* 10. Убираем анимацию на about__image — там drop-shadow filter,
-      который дорого анимировать. */
   .about__image:hover,
   .about__image:hover img {
     transform: none !important;
     filter: none !important;
   }
 
-  /* 11. Уменьшаем количество одновременных анимаций.
-      Marquee: замедляем, чтобы браузер успевал. */
   .marquee__track {
     animation-duration: 32s !important;
   }
 
-  /* 12. Фикс. Убираем hover-подъём карточки About на тач —
-      после тапа :hover "залипает", и карточка остаётся поднятой. */
   .about__content#aboutFlipCard:not(.is-flipped):hover {
     transform: none !important;
   }

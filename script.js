@@ -16,10 +16,6 @@ document.addEventListener("DOMContentLoaded", () => {
   initAboutFlipCard();
 });
 
-/* =========================================================
-   Глобальный плавный скролл для всех внутренних якорных ссылок
-   (меню, контакты, кнопка «Наверх» и переходы между секциями)
-   ========================================================= */
 function initSmoothAnchors() {
   const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
 
@@ -28,7 +24,7 @@ function initSmoothAnchors() {
     if (!link) return;
 
     const hash = link.getAttribute("href");
-    if (!hash || hash === "#") return; // не трогаем ссылки-заглушки артистов
+    if (!hash || hash === "#") return;
 
     let target;
     try {
@@ -77,8 +73,6 @@ function initSmoothWheel() {
   if (reduceMotion.matches || isTouch || typeof window.Lenis === "undefined")
     return;
 
-  // Lenis сглаживает именно колесо мыши, сохраняя естественное поведение
-  // тачпадов и клавиатуры. Не перехватываем wheel вручную.
   window.flowStateLenis = new window.Lenis({
     autoRaf: true,
     duration: 1.05,
@@ -105,13 +99,10 @@ function initScrollDown() {
     const sectionHeight = aboutSection.offsetHeight;
     const windowHeight = window.innerHeight;
 
-    // Центр секции относительно документа
     const sectionCenter = window.scrollY + rect.top + sectionHeight / 2;
 
-    // Целевая позиция скролла — центр секции в центре экрана
     let targetScroll = sectionCenter - windowHeight / 2;
 
-    // Не уходим ниже конца страницы
     const maxScroll = document.documentElement.scrollHeight - windowHeight;
     targetScroll = Math.min(targetScroll, maxScroll);
 
@@ -135,13 +126,13 @@ function initHeroShadow() {
 
   if (!window.matchMedia("(hover: hover) and (pointer: fine)").matches) return;
   // ---------- Настройки эффекта ----------
-  const MAX_OFFSET = 50; // макс. смещение тени в px
-  const MAX_DISTANCE = 350; // радиус, на котором достигается макс.
-  const CORE_BLUR = 10; // blur ядра
-  const HALO_BLUR = 40; // blur ореола
-  const HALO_MULT = 1.5; // ореол смещается сильнее ядра
+  const MAX_OFFSET = 50;
+  const MAX_DISTANCE = 350;
+  const CORE_BLUR = 10;
+  const HALO_BLUR = 40;
+  const HALO_MULT = 1.5;
 
-  const COLOR = "255, 255, 255"; // белый
+  const COLOR = "255, 255, 255";
   const CORE_ALPHA_MIN = 0.12;
   const CORE_ALPHA_MAX = 0.22;
   const HALO_ALPHA_MIN = 0.06;
@@ -178,7 +169,6 @@ function initHeroShadow() {
     const angleX = distance === 0 ? 0 : dx / distance;
     const angleY = distance === 0 ? 0 : dy / distance;
 
-    // Тень — в противоположную сторону от курсора
     const shadowX = -angleX * MAX_OFFSET * strength;
     const shadowY = -angleY * MAX_OFFSET * strength;
 
@@ -200,10 +190,8 @@ function initHeroShadow() {
   }
 
   // ---------- Слушатели ----------
-  // mousemove — на самой картинке
   heroImg.addEventListener("mousemove", onMouseMove);
 
-  // mouseleave — ушёл с картинки → тень исчезает
   heroImg.addEventListener("mouseleave", () => {
     if (rafId) {
       cancelAnimationFrame(rafId);
@@ -222,8 +210,8 @@ function initEqualizer() {
   if (!equalizer) return;
 
   // ---------- Настройки ----------
-  const MIN_HEIGHT = 8; // мин. высота в %
-  const MAX_HEIGHT = 100; // макс. высота в %
+  const MIN_HEIGHT = 8;
+  const MAX_HEIGHT = 100;
   const isMobile = window.matchMedia("(pointer: coarse)").matches;
   const FPS = isMobile ? 20 : 30;
   const BAR_COUNT = isMobile ? 16 : 24;
@@ -235,14 +223,11 @@ function initEqualizer() {
     bar.className = "equalizer__bar";
     equalizer.appendChild(bar);
 
-    // У каждой полоски свои параметры — «характер»
     bars.push({
       el: bar,
-      current: MIN_HEIGHT, // текущая высота
-      target: MIN_HEIGHT, // куда стремимся
-      speed: 0.15 + Math.random() * 0.25, // скорость сглаживания
-      // «Центральные» полоски прыгают выше — как в реальном спектре
-      // где середина диапазона обычно активнее
+      current: MIN_HEIGHT,
+      target: MIN_HEIGHT,
+      speed: 0.15 + Math.random() * 0.25,
       amplitude: 0.5 + Math.sin((i / BAR_COUNT) * Math.PI) * 0.5,
     });
   }
@@ -256,16 +241,13 @@ function initEqualizer() {
       lastTime = time;
 
       bars.forEach((bar) => {
-        // Раз в кадр с какой-то вероятностью выбираем новую цель
         if (Math.random() < 0.4) {
           const base = MIN_HEIGHT + Math.random() * (MAX_HEIGHT - MIN_HEIGHT);
           bar.target = base * bar.amplitude + MIN_HEIGHT * (1 - bar.amplitude);
         }
 
-        // Плавно движемся от current к target (lerp)
         bar.current += (bar.target - bar.current) * bar.speed;
 
-        // Применяем высоту
         bar.el.style.height = bar.current + "%";
       });
     }
@@ -281,8 +263,6 @@ function initSeamlessMarquee() {
   const firstCopy = track && track.querySelector(".marquee__content");
   if (!track || !firstCopy) return;
 
-  // Измеряем ширину первой копии и перемещаем строку ровно на это расстояние.
-  // Вторая копия занимает её место без пустого промежутка.
   const measure = () => {
     const distance = firstCopy.getBoundingClientRect().width;
     if (distance > 0)
@@ -359,7 +339,6 @@ function initHeader() {
 
   const lens = nav.querySelector(".nav__lens");
 
-  // Пары «ссылка меню → секция»
   const items = [...nav.querySelectorAll(".nav__link")]
     .map((link) => ({
       link,
@@ -381,7 +360,6 @@ function initHeader() {
     if (open) header.classList.remove("header--hidden");
   }
 
-  // Двигаем «линзу» под ссылку. При первом появлении — без анимации
   function moveLens(link) {
     if (!lens) return;
 
@@ -397,14 +375,13 @@ function initHeader() {
     lens.style.setProperty("--lens-w", link.offsetWidth + "px");
 
     if (firstShow) {
-      void lens.offsetWidth; // применяем позицию до включения transition
+      void lens.offsetWidth;
       lens.style.transition = "";
     }
     lens.classList.add("is-visible");
   }
 
   function updateActive() {
-    // Активна последняя секция, верх которой уже выше «линии» на 35% экрана
     const probe = window.innerHeight * 0.35;
     const atBottom =
       window.innerHeight + window.scrollY >=
@@ -466,13 +443,11 @@ function initHeader() {
     if (e.key === "Escape") setMenu(false);
   });
 
-  // Если растянули окно до десктопа при открытом меню — закрываем
   mobileQuery.addEventListener("change", (e) => {
     if (!e.matches) setMenu(false);
     moveLens(currentLink);
   });
 
-  // Ширина пунктов меняется после загрузки шрифта и при ресайзе
   window.addEventListener("resize", () => moveLens(currentLink));
   if (document.fonts && document.fonts.ready) {
     document.fonts.ready.then(() => moveLens(currentLink));
@@ -506,21 +481,21 @@ function initArtistsCarousel() {
   );
   const last = slides.length - 1;
 
-  // ---------- Настройки (крути под себя) ----------
-  const STIFFNESS = 140; // жёсткость пружины: больше = быстрее доезжает
-  const DAMPING = 2 * Math.sqrt(STIFFNESS); // критическое затухание — без «болтанки»
-  const PROJECTION = 0.2; // сек: как далеко «летит» слайд после броска
-  const COMMIT = 0.15; // доля шага: дальше неё свайп засчитывается как переход
-  const EDGE_RESIST = 0.35; // сопротивление за крайними слайдами
-  const DRAG_START = 6; // px до начала перетаскивания
-  const MAX_VEL = 8; // потолок скорости, слайдов/сек
+  // ---------- Настройки ----------
+  const STIFFNESS = 140;
+  const DAMPING = 2 * Math.sqrt(STIFFNESS);
+  const PROJECTION = 0.2;
+  const COMMIT = 0.15;
+  const EDGE_RESIST = 0.35;
+  const DRAG_START = 6;
+  const MAX_VEL = 8;
 
   // ---------- Состояние ----------
-  let step = 1; // расстояние между центрами соседних слайдов, px
-  let pos = 0; // текущая позиция в «слайдах» (дробная)
-  let vel = 0; // скорость, слайдов/сек
-  let target = 0; // индекс, к которому едем
-  let active = -1; // слайд, ближайший к центру
+  let step = 1;
+  let pos = 0;
+  let vel = 0;
+  let target = 0;
+  let active = -1;
   let rafId = null;
   let lastTime = 0;
 
@@ -556,9 +531,6 @@ function initArtistsCarousel() {
 
   function render() {
     track.style.transform = `translate3d(${(-pos * step).toFixed(2)}px, 0, 0)`;
-
-    // На телефонах не пересчитываем фильтры и scale всех карточек на каждом
-    // событии касания: это провоцировало repaint и ощущение 30 FPS.
     if (!mobilePerformance.matches) {
       slides.forEach((s, i) => {
         s.style.setProperty("--d", Math.min(Math.abs(i - pos), 1).toFixed(3));
@@ -608,9 +580,6 @@ function initArtistsCarousel() {
     target = clampIndex(i);
 
     if (mobilePerformance.matches) {
-      // Нативный compositor transition на мобильных вместо JS-пружины.
-      // Во время самого свайпа transition отключается, чтобы палец и карточка
-      // двигались синхронно; после отпускания браузер плавно доводит слайд.
       stopLoop();
       pos = target;
       vel = 0;
@@ -632,7 +601,7 @@ function initArtistsCarousel() {
     startLoop();
   }
 
-  // ---------- Перетаскивание (мышь, тач, стилус) ----------
+  // ---------- Перетаскивание ----------
   let dragging = false;
   let moved = false;
   let pointerId = null;
@@ -643,7 +612,6 @@ function initArtistsCarousel() {
   let lastT = 0;
   let dragVel = 0;
 
-  // За краями — «резиновое» сопротивление
   function resist(p) {
     if (p < 0) return p * EDGE_RESIST;
     if (p > last) return last + (p - last) * EDGE_RESIST;
@@ -663,7 +631,7 @@ function initArtistsCarousel() {
     startIndex = target;
     dragVel = 0;
 
-    stopLoop(); // перехватываем слайд «на лету»
+    stopLoop();
     vel = 0;
   });
 
@@ -676,7 +644,6 @@ function initArtistsCarousel() {
       if (Math.abs(dx) < DRAG_START) return;
       moved = true;
       viewport.classList.add("is-dragging");
-      // Захват только после порога — иначе обычный клик по ссылке сломается
       try {
         viewport.setPointerCapture(e.pointerId);
       } catch (_) {}
@@ -684,7 +651,6 @@ function initArtistsCarousel() {
 
     pos = resist(startPos - dx / step);
 
-    // Сглаженная скорость в слайдах/сек (без учёта сопротивления)
     const dt = (e.timeStamp - lastT) / 1000;
     if (dt > 0) {
       const inst = -(e.clientX - lastX) / step / dt;
@@ -701,28 +667,23 @@ function initArtistsCarousel() {
     dragging = false;
     viewport.classList.remove("is-dragging");
 
-    // Просто тап — возобновляем движение к цели
     if (!moved) {
       goTo(target);
       return;
     }
 
-    // Куда «упадёт» слайд с учётом броска
     let next = Math.round(pos + dragVel * PROJECTION);
 
-    // Недосвайп: если потянули дальше COMMIT — всё равно листаем
     const delta = pos - startIndex;
     if (next === startIndex && Math.abs(delta) > COMMIT) {
       next = startIndex + Math.sign(delta);
     }
 
-    // Если перед отпусканием палец/мышь стояли — инерции нет
     const stale = e.timeStamp - lastT > 80;
     vel = stale ? 0 : Math.max(-MAX_VEL, Math.min(MAX_VEL, dragVel));
 
     goTo(next);
 
-    // click после mouseup ещё должен увидеть moved = true
     setTimeout(() => {
       moved = false;
     }, 0);
@@ -731,7 +692,6 @@ function initArtistsCarousel() {
   window.addEventListener("pointerup", endDrag);
   window.addEventListener("pointercancel", endDrag);
 
-  // Нативный drag картинок/ссылок ломает перетаскивание
   viewport.addEventListener("dragstart", (e) => e.preventDefault());
 
   // ---------- Горизонтальный скролл трекпадом ----------
@@ -740,7 +700,7 @@ function initArtistsCarousel() {
   viewport.addEventListener(
     "wheel",
     (e) => {
-      if (Math.abs(e.deltaX) <= Math.abs(e.deltaY)) return; // вертикаль — странице
+      if (Math.abs(e.deltaX) <= Math.abs(e.deltaY)) return;
 
       e.preventDefault();
       stopLoop();
@@ -755,8 +715,6 @@ function initArtistsCarousel() {
     { passive: false },
   );
 
-  // ---------- Клик: после перетаскивания игнорируем; по боковому слайду —
-  // центрируем вместо перехода по ссылке ----------
   viewport.addEventListener("click", (e) => {
     if (moved) {
       e.preventDefault();
@@ -802,7 +760,6 @@ function initArtistsCarousel() {
   });
 
   measure();
-  // Стартуем со среднего артиста — по бокам видны соседи
   target = pos = Math.floor(last / 2);
   render();
 }
@@ -836,7 +793,6 @@ function initAboutFlipCard() {
 
   setFlipped(false);
 
-  // Блик при наведении (только на лицевой стороне и только на desktop)
   const finePointer = window.matchMedia("(hover: hover) and (pointer: fine)");
   const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
   if (!finePointer.matches || reduceMotion.matches) return;
@@ -846,7 +802,7 @@ function initAboutFlipCard() {
   card.addEventListener("mouseenter", () => {
     if (card.classList.contains("is-flipped")) return;
     card.classList.remove("glint-active");
-    void card.offsetWidth; // перезапуск CSS-анимации
+    void card.offsetWidth;
     card.classList.add("glint-active");
     clearTimeout(glintTimer);
     glintTimer = setTimeout(() => card.classList.remove("glint-active"), 650);
