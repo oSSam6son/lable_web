@@ -125,24 +125,34 @@
           <img src="images/image-1.png" alt="Flow State Music" />
         </div>
 
-        <div class="about__content">
-          <h2 class="about__title">FLOW STATE —</h2>
-          <p class="about__desc">
-            международный музыкальный лейбл, независимый издатель России
-          </p>
+        <div class="about__content" id="aboutFlipCard">
+          <div class="about__face about__face--front">
+            <button class="about__flip-button" type="button" aria-label="Перевернуть карточку" aria-pressed="false">
+              <span aria-hidden="true">↗</span>
+            </button>
+            <h2 class="about__title">FLOW STATE —</h2>
+            <p class="about__desc">
+              международный музыкальный лейбл, независимый издатель России
+            </p>
 
-          <ul class="about__stats">
-            <li><span>10+</span> подписанных артистов</li>
-            <li><span>100+</span> опубликованных треков</li>
-            <li><span>1 000 000+</span> прослушиваний ежемесячно</li>
-          </ul>
+            <ul class="about__stats">
+              <li><span>10+</span> подписанных артистов</li>
+              <li><span>100+</span> опубликованных треков</li>
+              <li><span>1 000 000+</span> прослушиваний ежемесячно</li>
+            </ul>
 
-          <p class="about__values">Каждый артист лейбла — часть одной семьи</p>
-          <ul class="about__principles">
-            <li>Честность</li>
-            <li>Открытость</li>
-            <li>Осознанность</li>
-          </ul>
+            <p class="about__values">Каждый артист лейбла — часть одной семьи</p>
+            <ul class="about__principles">
+              <li>Честность</li>
+              <li>Открытость</li>
+              <li>Осознанность</li>
+            </ul>
+          </div>
+          <div class="about__face about__face--back" aria-hidden="true">
+            <button class="about__flip-button about__flip-button--back" type="button" aria-label="Вернуть карточку обратно">
+              <span aria-hidden="true">↗</span>
+            </button>
+          </div>
         </div>
       </div>
     </section>
@@ -272,8 +282,8 @@
       </div>
     </section>
 
-    <!-- ================= MARQUEE / ПЕРЕХОД К КОНТАКТАМ =================
-    <a
+    <!-- ================= MARQUEE / ПЕРЕХОД К КОНТАКТАМ ================= -->
+    <!-- <a
       class="marquee"
       href="#contacts"
       aria-label="Больше о нас — перейти к контактам"
@@ -295,46 +305,31 @@
       <h2 class="section-title">Партнёры</h2>
 
       <div class="partners__grid">
-        <article class="partners__item partner-card partner-card--zvonko" aria-label="Zvonko Digital">
-          <span class="partner-card__glow" aria-hidden="true"></span>
-          <div class="partner-card__logo partner-card__logo--zvonko">
-            <span class="partner-card__icon-wrap">
-              <img class="partner-card__icon" src="images/partners/zvonko-icon.png" alt="" />
-            </span>
-            <img class="partner-card__wordmark" src="images/partners/zvonko-wordmark.png" alt="Zvonko Digital" />
+        <div class="partners__item partners__item--zvonko">
+          <div class="partners__logo partners__logo--zvonko">
+            <span class="partners__icon-wrap"><img class="partners__icon" src="images/partners/zvonko-icon.png" alt="" /></span>
+            <img class="partners__wordmark partners__wordmark--zvonko" src="images/partners/zvonko-wordmark.png" alt="Zvonko Digital" />
           </div>
-        </article>
-
-        <article class="partners__item partner-card partner-card--yandex" aria-label="Яндекс Музыка">
-          <span class="partner-card__glow" aria-hidden="true"></span>
-          <div class="partner-card__logo partner-card__logo--yandex">
-            <img class="partner-card__wordmark partner-card__wordmark--yandex-left" src="images/partners/yandex-wordmark-left.png" alt="Яндекс" />
-            <span class="partner-card__icon-wrap">
-              <img class="partner-card__icon" src="images/partners/yandex-icon.png" alt="" />
-            </span>
-            <img class="partner-card__wordmark partner-card__wordmark--yandex-right" src="images/partners/yandex-wordmark-right.png" alt="Музыка" />
+        </div>
+        <div class="partners__item partners__item--yandex">
+          <div class="partners__logo partners__logo--yandex">
+            <img class="partners__wordmark partners__wordmark--yandex-left" src="images/partners/yandex-wordmark-left.png" alt="Яндекс" />
+            <span class="partners__icon-wrap"><img class="partners__icon" src="images/partners/yandex-icon.png" alt="" /></span>
+            <img class="partners__wordmark partners__wordmark--yandex-right" src="images/partners/yandex-wordmark-right.png" alt="Музыка" />
           </div>
-        </article>
-
-        <article class="partners__item partner-card partner-card--vk" aria-label="VK Музыка">
-          <span class="partner-card__glow" aria-hidden="true"></span>
-          <div class="partner-card__logo partner-card__logo--vk">
-            <span class="partner-card__icon-wrap">
-              <img class="partner-card__icon" src="images/partners/vk-icon.png" alt="" />
-            </span>
-            <img class="partner-card__wordmark" src="images/partners/vk-wordmark.png" alt="VK Музыка" />
+        </div>
+        <div class="partners__item partners__item--vk">
+          <div class="partners__logo partners__logo--vk">
+            <span class="partners__icon-wrap"><img class="partners__icon" src="images/partners/vk-icon.png" alt="" /></span>
+            <img class="partners__wordmark partners__wordmark--vk" src="images/partners/vk-wordmark.png" alt="VK Музыка" />
           </div>
-        </article>
-
-        <article class="partners__item partner-card partner-card--koala" aria-label="Koala Music">
-          <span class="partner-card__glow" aria-hidden="true"></span>
-          <div class="partner-card__logo partner-card__logo--koala">
-            <span class="partner-card__icon-wrap">
-              <img class="partner-card__icon" src="images/partners/koala-icon.png" alt="" />
-            </span>
-            <img class="partner-card__wordmark" src="images/partners/koala-wordmark.png" alt="Koala Music" />
+        </div>
+        <div class="partners__item partners__item--koala">
+          <div class="partners__logo partners__logo--koala">
+            <span class="partners__icon-wrap"><img class="partners__icon" src="images/partners/koala-icon.png" alt="" /></span>
+            <img class="partners__wordmark partners__wordmark--koala" src="images/partners/koala-wordmark.png" alt="Koala Music" />
           </div>
-        </article>
+        </div>
       </div>
     </section>
 

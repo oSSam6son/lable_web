@@ -8,15 +8,13 @@ document.addEventListener("DOMContentLoaded", () => {
   initScrollDown();
   initHeroShadow();
   initEqualizer();
-  initRails();
   initSeamlessMarquee();
   initArtistCards();
   initFooterYear();
   initHeader();
   initArtistsCarousel();
-  initAboutFlip();
+  initAboutFlipCard();
 });
-
 
 /* =========================================================
    Глобальный плавный скролл для всех внутренних якорных ссылок
@@ -42,14 +40,25 @@ function initSmoothAnchors() {
 
     event.preventDefault();
     const header = document.getElementById("header");
-    const headerOffset = header ? Math.min(header.getBoundingClientRect().height, 96) : 0;
-    const targetTop = hash === "#top" ? 0 : window.scrollY + target.getBoundingClientRect().top - headerOffset - 12;
+    const headerOffset = header
+      ? Math.min(header.getBoundingClientRect().height, 96)
+      : 0;
+    const targetTop =
+      hash === "#top"
+        ? 0
+        : window.scrollY +
+          target.getBoundingClientRect().top -
+          headerOffset -
+          12;
 
     const destination = Math.max(0, targetTop);
     if (window.flowStateLenis && !reduceMotion.matches) {
       window.flowStateLenis.scrollTo(destination, { duration: 1.05 });
     } else {
-      window.scrollTo({ top: destination, behavior: reduceMotion.matches ? "auto" : "smooth" });
+      window.scrollTo({
+        top: destination,
+        behavior: reduceMotion.matches ? "auto" : "smooth",
+      });
     }
 
     if (window.location.hash !== hash) {
@@ -64,7 +73,9 @@ function initSmoothAnchors() {
    ========================================================= */
 function initSmoothWheel() {
   const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
-  if (reduceMotion.matches || typeof window.Lenis === "undefined") return;
+  const isTouch = window.matchMedia("(pointer: coarse)").matches;
+  if (reduceMotion.matches || isTouch || typeof window.Lenis === "undefined")
+    return;
 
   // Lenis сглаживает именно колесо мыши, сохраняя естественное поведение
   // тачпадов и клавиатуры. Не перехватываем wheel вручную.
@@ -122,6 +133,7 @@ function initHeroShadow() {
   const heroImg = document.getElementById("heroMan");
   if (!heroImg) return;
 
+  if (!window.matchMedia("(hover: hover) and (pointer: fine)").matches) return;
   // ---------- Настройки эффекта ----------
   const MAX_OFFSET = 50; // макс. смещение тени в px
   const MAX_DISTANCE = 350; // радиус, на котором достигается макс.
@@ -210,10 +222,11 @@ function initEqualizer() {
   if (!equalizer) return;
 
   // ---------- Настройки ----------
-  const BAR_COUNT = 24; // сколько полосок
   const MIN_HEIGHT = 8; // мин. высота в %
   const MAX_HEIGHT = 100; // макс. высота в %
-  const FPS = 30; // обновлений в секунду
+  const isMobile = window.matchMedia("(pointer: coarse)").matches;
+  const FPS = isMobile ? 20 : 30;
+  const BAR_COUNT = isMobile ? 16 : 24;
 
   // ---------- Создаём полоски ----------
   const bars = [];
@@ -263,28 +276,6 @@ function initEqualizer() {
   requestAnimationFrame(tick);
 }
 
-/* =========================================================
-   4. Rails — бесшовный скролл через ручной цикл
-   ========================================================= */
-function initRails() {
-  // Двигаем rail ровно на высоту ОДНОЙ копии, а не на округлённую долю
-  // высоты всего трека. Это исключает микроскачок в точке повтора.
-  document.querySelectorAll(".rail__track").forEach((track) => {
-    const group = track.querySelector(".rail__group");
-    if (!group) return;
-
-    const measure = () => {
-      const distance = group.getBoundingClientRect().height;
-      if (distance > 0) track.style.setProperty("--rail-distance", `${distance}px`);
-    };
-
-    measure();
-    if ("ResizeObserver" in window) new ResizeObserver(measure).observe(group);
-    if (document.fonts && document.fonts.ready) document.fonts.ready.then(measure);
-    window.addEventListener("resize", measure, { passive: true });
-  });
-}
-
 function initSeamlessMarquee() {
   const track = document.querySelector(".marquee__track");
   const firstCopy = track && track.querySelector(".marquee__content");
@@ -294,12 +285,15 @@ function initSeamlessMarquee() {
   // Вторая копия занимает её место без пустого промежутка.
   const measure = () => {
     const distance = firstCopy.getBoundingClientRect().width;
-    if (distance > 0) track.style.setProperty("--marquee-distance", `${distance}px`);
+    if (distance > 0)
+      track.style.setProperty("--marquee-distance", `${distance}px`);
   };
 
   measure();
-  if ("ResizeObserver" in window) new ResizeObserver(measure).observe(firstCopy);
-  if (document.fonts && document.fonts.ready) document.fonts.ready.then(measure);
+  if ("ResizeObserver" in window)
+    new ResizeObserver(measure).observe(firstCopy);
+  if (document.fonts && document.fonts.ready)
+    document.fonts.ready.then(measure);
   window.addEventListener("resize", measure, { passive: true });
 }
 
@@ -308,10 +302,10 @@ function initSeamlessMarquee() {
    Пятно света следует за курсором внутри карточки
    ========================================================= */
 function initArtistCards() {
-  const cards = document.querySelectorAll(".carousel__slide .artist-card");
   const finePointer = window.matchMedia("(hover: hover) and (pointer: fine)");
   const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
   if (!finePointer.matches || reduceMotion.matches) return;
+  const cards = document.querySelectorAll(".carousel__slide .artist-card");
 
   cards.forEach((card) => {
     let rafId = null;
@@ -507,7 +501,9 @@ function initArtistsCarousel() {
   if (!viewport || !track || !slides.length) return;
 
   const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
-  const mobilePerformance = window.matchMedia("(max-width: 768px), (pointer: coarse)");
+  const mobilePerformance = window.matchMedia(
+    "(max-width: 768px), (pointer: coarse)",
+  );
   const last = slides.length - 1;
 
   // ---------- Настройки (крути под себя) ----------
@@ -618,7 +614,8 @@ function initArtistsCarousel() {
       stopLoop();
       pos = target;
       vel = 0;
-      if (instant || reduceMotion.matches) track.classList.remove("is-settling");
+      if (instant || reduceMotion.matches)
+        track.classList.remove("is-settling");
       else track.classList.add("is-settling");
       render();
       return;
@@ -800,7 +797,8 @@ function initArtistsCarousel() {
   });
 
   track.addEventListener("transitionend", (event) => {
-    if (event.propertyName === "transform") track.classList.remove("is-settling");
+    if (event.propertyName === "transform")
+      track.classList.remove("is-settling");
   });
 
   measure();
@@ -809,16 +807,53 @@ function initArtistsCarousel() {
   render();
 }
 
-/* ABOUT card flip: only the corner buttons toggle the two-sided card. */
-function initAboutFlip() {
+/* =========================================================
+   ABOUT — переворот карточки + блик при наведении
+   ========================================================= */
+function initAboutFlipCard() {
   const card = document.getElementById("aboutFlipCard");
   if (!card) return;
-  const buttons = card.querySelectorAll("[data-about-flip]");
-  buttons.forEach((button) => {
-    button.addEventListener("click", (event) => {
-      event.stopPropagation();
-      const flipped = card.classList.toggle("is-flipped");
-      buttons.forEach((item) => item.setAttribute("aria-pressed", String(flipped)));
-    });
+
+  const frontFace = card.querySelector(".about__face--front");
+  const backFace = card.querySelector(".about__face--back");
+  const frontButton = frontFace?.querySelector(".about__flip-button");
+  const backButton = backFace?.querySelector(".about__flip-button");
+  if (!frontFace || !backFace || !frontButton || !backButton) return;
+
+  const setFlipped = (flipped) => {
+    card.classList.toggle("is-flipped", flipped);
+    frontFace.setAttribute("aria-hidden", String(flipped));
+    backFace.setAttribute("aria-hidden", String(!flipped));
+    frontButton.setAttribute("aria-pressed", String(flipped));
+    backButton.setAttribute("aria-pressed", String(!flipped));
+  };
+
+  card.addEventListener("click", (event) => {
+    const button = event.target.closest(".about__flip-button");
+    if (!button || !card.contains(button)) return;
+    setFlipped(!card.classList.contains("is-flipped"));
+  });
+
+  setFlipped(false);
+
+  // Блик при наведении (только на лицевой стороне и только на desktop)
+  const finePointer = window.matchMedia("(hover: hover) and (pointer: fine)");
+  const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
+  if (!finePointer.matches || reduceMotion.matches) return;
+
+  let glintTimer = null;
+
+  card.addEventListener("mouseenter", () => {
+    if (card.classList.contains("is-flipped")) return;
+    card.classList.remove("glint-active");
+    void card.offsetWidth; // перезапуск CSS-анимации
+    card.classList.add("glint-active");
+    clearTimeout(glintTimer);
+    glintTimer = setTimeout(() => card.classList.remove("glint-active"), 650);
+  });
+
+  card.addEventListener("mouseleave", () => {
+    clearTimeout(glintTimer);
+    card.classList.remove("glint-active");
   });
 }
