@@ -1,0 +1,415 @@
+<!doctype html>
+<html lang="ru">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>FLOW STATE MUSIC</title>
+
+    <!-- Шрифты: Bebas Neue (заголовки) + Inter (текст). Заменим позже, если найдём оригинал -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@300;400;500;600&family=Oswald:wght@500&display=swap"
+      rel="stylesheet"
+    />
+
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body id="top">
+    <aside class="rail rail--left" aria-hidden="true">
+      <div class="rail__track">
+        <div class="rail__group">
+          <span>FLOW STATE MUSIC</span><span class="rail__dot">•</span>
+          <span>MOSCOW</span><span class="rail__dot">•</span>
+          <span>EST. 2024</span><span class="rail__dot">•</span>
+          <span>THRILL PILL</span><span class="rail__dot">•</span>
+          <span>XXXMANERA</span><span class="rail__dot">•</span>
+          <span>APX1TEKTOP</span><span class="rail__dot">•</span>
+        </div>
+        <div class="rail__group">
+          <span>FLOW STATE MUSIC</span><span class="rail__dot">•</span>
+          <span>MOSCOW</span><span class="rail__dot">•</span>
+          <span>EST. 2024</span><span class="rail__dot">•</span>
+          <span>THRILL PILL</span><span class="rail__dot">•</span>
+          <span>XXXMANERA</span><span class="rail__dot">•</span>
+          <span>APX1TEKTOP</span><span class="rail__dot">•</span>
+        </div>
+        <div class="rail__group">
+          <span>FLOW STATE MUSIC</span><span class="rail__dot">•</span>
+          <span>MOSCOW</span><span class="rail__dot">•</span>
+          <span>EST. 2024</span><span class="rail__dot">•</span>
+          <span>THRILL PILL</span><span class="rail__dot">•</span>
+          <span>XXXMANERA</span><span class="rail__dot">•</span>
+          <span>APX1TEKTOP</span><span class="rail__dot">•</span>
+        </div>
+      </div>
+    </aside>
+
+    <aside class="rail rail--right" aria-hidden="true">
+      <div class="rail__track">
+        <div class="rail__group">
+          <span>FLOW STATE MUSIC</span><span class="rail__dot">•</span>
+          <span>MOSCOW</span><span class="rail__dot">•</span>
+          <span>EST. 2024</span><span class="rail__dot">•</span>
+          <span>XXXMANERA</span><span class="rail__dot">•</span>
+          <span>THRILL PILL</span><span class="rail__dot">•</span>
+          <span>APX1TEKTOP</span><span class="rail__dot">•</span>
+        </div>
+        <div class="rail__group">
+          <span>FLOW STATE MUSIC</span><span class="rail__dot">•</span>
+          <span>MOSCOW</span><span class="rail__dot">•</span>
+          <span>EST. 2024</span><span class="rail__dot">•</span>
+          <span>XXXMANERA</span><span class="rail__dot">•</span>
+          <span>THRILL PILL</span><span class="rail__dot">•</span>
+          <span>APX1TEKTOP</span><span class="rail__dot">•</span>
+        </div>
+        <div class="rail__group">
+          <span>FLOW STATE MUSIC</span><span class="rail__dot">•</span>
+          <span>MOSCOW</span><span class="rail__dot">•</span>
+          <span>EST. 2024</span><span class="rail__dot">•</span>
+          <span>XXXMANERA</span><span class="rail__dot">•</span>
+          <span>THRILL PILL</span><span class="rail__dot">•</span>
+          <span>APX1TEKTOP</span><span class="rail__dot">•</span>
+        </div>
+      </div>
+    </aside>
+    <!-- ================= HEADER / МЕНЮ ================= -->
+    <header class="header" id="header">
+      <nav class="nav" id="nav" aria-label="Основное меню">
+        <span class="nav__lens" aria-hidden="true"></span>
+        <a class="nav__link" href="#about">О нас</a>
+        <a class="nav__link" href="#artists">Артисты</a>
+        <a class="nav__link" href="#partners">Партнёры</a>
+        <a class="nav__link" href="#contacts">Контакты</a>
+      </nav>
+
+      <button
+        class="burger"
+        id="burger"
+        type="button"
+        aria-label="Открыть меню"
+        aria-expanded="false"
+        aria-controls="nav"
+      >
+        <span></span><span></span><span></span>
+      </button>
+    </header>
+
+    <!-- ================= HERO ================= -->
+    <section class="hero" id="hero">
+      <h1 class="hero__title">FLOW STATE MUSIC</h1>
+
+      <div class="equalizer" id="equalizer" aria-hidden="true"></div>
+
+      <button class="hero__scroll" id="scrollDown" aria-label="Прокрутить вниз">
+        <svg
+          width="32"
+          height="32"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="1.5"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        >
+          <polyline points="6 9 12 15 18 9"></polyline>
+        </svg>
+      </button>
+    </section>
+
+    <!-- ================= ABOUT ================= -->
+    <section class="about" id="about">
+      <div class="about__inner">
+        <div class="about__image">
+          <!-- ЗАМЕНИ: иллюстрация человека в наушниках -->
+          <img src="images/image-1.png" alt="Flow State Music" />
+        </div>
+
+        <div class="about__content">
+          <h2 class="about__title">FLOW STATE —</h2>
+          <p class="about__desc">
+            международный музыкальный лейбл, независимый издатель России
+          </p>
+
+          <ul class="about__stats">
+            <li><span>10+</span> подписанных артистов</li>
+            <li><span>100+</span> опубликованных треков</li>
+            <li><span>1 000 000+</span> прослушиваний ежемесячно</li>
+          </ul>
+
+          <p class="about__values">Каждый артист лейбла — часть одной семьи</p>
+          <ul class="about__principles">
+            <li>Честность</li>
+            <li>Открытость</li>
+            <li>Осознанность</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= ARTISTS ================= -->
+    <section class="artists" id="artists">
+      <h2 class="section-title">Артисты</h2>
+
+      <div class="carousel" id="artistsCarousel">
+        <div
+          class="carousel__viewport"
+          tabindex="0"
+          role="region"
+          aria-roledescription="карусель"
+          aria-label="Артисты лейбла"
+        >
+          <ul class="carousel__track">
+            <li class="carousel__slide">
+              <a href="https://music.yandex.ru/artist/8548866" target="_blank" class="artist-card">
+                <div class="artist-card__image">
+                  <img
+                    src="images/artist-1.jpg"
+                    alt="XXXMANERA"
+                    loading="lazy"
+                    draggable="false"
+                  />
+                </div>
+                <h3 class="artist-card__name">XXXMANERA</h3>
+              </a>
+            </li>
+            <li class="carousel__slide">
+              <a href="#" class="artist-card">
+                <div class="artist-card__image">
+                  <img
+                    src="images/kudokushi.png"
+                    alt="KUDOKUSHI"
+                    loading="lazy"
+                    draggable="false"
+                  />
+                </div>
+                <h3 class="artist-card__name">KUDOKUSHI</h3>
+              </a>
+            </li>
+            <li class="carousel__slide">
+              <a href="#" class="artist-card">
+                <div class="artist-card__image">
+                  <img
+                    src="images/anonimus ember.png"
+                    alt="anonimus ember"
+                    loading="lazy"
+                    draggable="false"
+                  />
+                </div>
+                <h3 class="artist-card__name">anonimus ember</h3>
+              </a>
+            </li>
+            <li class="carousel__slide">
+              <a href="#" class="artist-card">
+                <div class="artist-card__image">
+                  <img
+                    src="images/707.jpg"
+                    alt="707"
+                    loading="lazy"
+                    draggable="false"
+                  />
+                </div>
+                <h3 class="artist-card__name">семьсот семь</h3>
+              </a>
+            </li>
+            <li class="carousel__slide">
+              <a href="#" class="artist-card">
+                <div class="artist-card__image">
+                  <img
+                    src="images/artist-3.jpg"
+                    alt="APX1TEKTOP"
+                    loading="lazy"
+                    draggable="false"
+                  />
+                </div>
+                <h3 class="artist-card__name">OG BLESS</h3>
+              </a>
+            </li>
+          </ul>
+        </div>
+
+        <div class="carousel__controls">
+          <button
+            class="carousel__arrow carousel__arrow--prev"
+            type="button"
+            aria-label="Предыдущий артист"
+          >
+            <svg
+              width="22"
+              height="22"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="1.5"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              aria-hidden="true"
+            >
+              <polyline points="15 18 9 12 15 6"></polyline>
+            </svg>
+          </button>
+          <div class="carousel__dots"></div>
+          <button
+            class="carousel__arrow carousel__arrow--next"
+            type="button"
+            aria-label="Следующий артист"
+          >
+            <svg
+              width="22"
+              height="22"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="1.5"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              aria-hidden="true"
+            >
+              <polyline points="9 18 15 12 9 6"></polyline>
+            </svg>
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= MARQUEE / ПЕРЕХОД К КОНТАКТАМ =================
+    <a
+      class="marquee"
+      href="#contacts"
+      aria-label="Больше о нас — перейти к контактам"
+    >
+      <span class="marquee__track" aria-hidden="true">
+        <span class="marquee__content"
+          >БОЛЬШЕ О НАС <i>●</i> БОЛЬШЕ О НАС <i>●</i> БОЛЬШЕ О НАС
+          <i>●</i> БОЛЬШЕ О НАС <i>●</i>&nbsp;</span
+        >
+        <span class="marquee__content"
+          >БОЛЬШЕ О НАС <i>●</i> БОЛЬШЕ О НАС <i>●</i> БОЛЬШЕ О НАС
+          <i>●</i> БОЛЬШЕ О НАС <i>●</i>&nbsp;</span
+        >
+      </span>
+    </a> -->
+
+    <!-- ================= PARTNERS ================= -->
+    <section class="partners" id="partners">
+      <h2 class="section-title">Партнёры</h2>
+
+      <div class="partners__grid">
+        <article class="partners__item partner-card partner-card--zvonko" aria-label="Zvonko Digital">
+          <span class="partner-card__glow" aria-hidden="true"></span>
+          <div class="partner-card__logo partner-card__logo--zvonko">
+            <span class="partner-card__icon-wrap">
+              <img class="partner-card__icon" src="images/partners/zvonko-icon.png" alt="" />
+            </span>
+            <img class="partner-card__wordmark" src="images/partners/zvonko-wordmark.png" alt="Zvonko Digital" />
+          </div>
+        </article>
+
+        <article class="partners__item partner-card partner-card--yandex" aria-label="Яндекс Музыка">
+          <span class="partner-card__glow" aria-hidden="true"></span>
+          <div class="partner-card__logo partner-card__logo--yandex">
+            <img class="partner-card__wordmark partner-card__wordmark--yandex-left" src="images/partners/yandex-wordmark-left.png" alt="Яндекс" />
+            <span class="partner-card__icon-wrap">
+              <img class="partner-card__icon" src="images/partners/yandex-icon.png" alt="" />
+            </span>
+            <img class="partner-card__wordmark partner-card__wordmark--yandex-right" src="images/partners/yandex-wordmark-right.png" alt="Музыка" />
+          </div>
+        </article>
+
+        <article class="partners__item partner-card partner-card--vk" aria-label="VK Музыка">
+          <span class="partner-card__glow" aria-hidden="true"></span>
+          <div class="partner-card__logo partner-card__logo--vk">
+            <span class="partner-card__icon-wrap">
+              <img class="partner-card__icon" src="images/partners/vk-icon.png" alt="" />
+            </span>
+            <img class="partner-card__wordmark" src="images/partners/vk-wordmark.png" alt="VK Музыка" />
+          </div>
+        </article>
+
+        <article class="partners__item partner-card partner-card--koala" aria-label="Koala Music">
+          <span class="partner-card__glow" aria-hidden="true"></span>
+          <div class="partner-card__logo partner-card__logo--koala">
+            <span class="partner-card__icon-wrap">
+              <img class="partner-card__icon" src="images/partners/koala-icon.png" alt="" />
+            </span>
+            <img class="partner-card__wordmark" src="images/partners/koala-wordmark.png" alt="Koala Music" />
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <!-- ================= CONTACTS ================= -->
+    <section class="contacts" id="contacts">
+      <div class="contacts__inner">
+        <div class="contacts__heading">
+          <span class="contacts__eyebrow"
+            ><i aria-hidden="true"></i> FLOW STATE MUSIC / CONTACT</span
+          >
+          <h2 class="section-title contacts__title">
+            НАПИШИТЕ <span>НАМ</span>
+          </h2>
+          <p class="contacts__intro">
+            Открыты новым артистам, партнёрам и смелым идеям. Выбери направление
+            — и начнём разговор.
+          </p>
+        </div>
+
+        <div class="contacts__grid">
+          <a
+            class="contact-btn"
+            href="#"
+            aria-label="Telegram-канал — ссылка пока не настроена"
+          >
+            <span class="contact-btn__number">01 / MEDIA</span>
+            <span class="contact-btn__main"
+              ><strong>Telegram-канал</strong
+              ><small>Новости, релизы и жизнь лейбла</small></span
+            >
+            <span class="contact-btn__arrow" aria-hidden="true">&gt;</span>
+          </a>
+          <a
+            class="contact-btn"
+            href="#"
+            aria-label="Менеджер Telegram — ссылка пока не настроена"
+          >
+            <span class="contact-btn__number">02 / BUSINESS</span>
+            <span class="contact-btn__main"
+              ><strong>Менеджер в Telegram</strong
+              ><small>Сотрудничество и предложения</small></span
+            >
+            <span class="contact-btn__arrow" aria-hidden="true">&gt;</span>
+          </a>
+          <a
+            class="contact-btn"
+            href="#"
+            aria-label="Студия звукозаписи — ссылка пока не настроена"
+          >
+            <span class="contact-btn__number">03 / STUDIO</span>
+            <span class="contact-btn__main"
+              ><strong>Студия звукозаписи</strong
+              ><small>Запись, звук и продакшн</small></span
+            >
+            <span class="contact-btn__arrow" aria-hidden="true">&gt;</span>
+          </a>
+        </div>
+        <div class="contacts__bottomline">
+          <span>НЕ ЖДИ ИДЕАЛЬНОГО МОМЕНТА.</span
+          ><span>СОЗДАЙ ЕГО. <b>&gt;</b></span>
+        </div>
+      </div>
+    </section>
+
+    <!-- Только юридические сведения оставлены внизу страницы -->
+    <div class="legal-strip" aria-label="Юридические сведения">
+      <p class="legal-strip__name">ООО «ФЛОУ СТЭЙТ»</p>
+      <p>ОГРН 1257700071452</p>
+      <p>
+        Юридический адрес: 129085, г. Москва, вн. тер. г. муниципальный округ
+        Останкинский, пр-кт Мира, д. 95, помещ. 29
+      </p>
+    </div>
+
+    <script src="https://unpkg.com/lenis@1.3.11/dist/lenis.min.js"></script>
+    <script src="script.js"></script>
+  </body>
+</html>

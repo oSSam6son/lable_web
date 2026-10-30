@@ -14,6 +14,7 @@ document.addEventListener("DOMContentLoaded", () => {
   initFooterYear();
   initHeader();
   initArtistsCarousel();
+  initAboutFlip();
 });
 
 
@@ -806,4 +807,18 @@ function initArtistsCarousel() {
   // Стартуем со среднего артиста — по бокам видны соседи
   target = pos = Math.floor(last / 2);
   render();
+}
+
+/* ABOUT card flip: only the corner buttons toggle the two-sided card. */
+function initAboutFlip() {
+  const card = document.getElementById("aboutFlipCard");
+  if (!card) return;
+  const buttons = card.querySelectorAll("[data-about-flip]");
+  buttons.forEach((button) => {
+    button.addEventListener("click", (event) => {
+      event.stopPropagation();
+      const flipped = card.classList.toggle("is-flipped");
+      buttons.forEach((item) => item.setAttribute("aria-pressed", String(flipped)));
+    });
+  });
 }

@@ -99,7 +99,7 @@ body::after {
   font-size: clamp(32px, 4vw, 56px);
   letter-spacing: 0.02em;
   text-align: center;
-  margin-bottom: 60px;
+  margin-bottom: 20px;
   text-transform: uppercase;
 }
 
@@ -166,7 +166,7 @@ body::after {
    ========================================================= */
 .hero {
   position: relative;
-  min-height: 100vh;
+  min-height: 80vh;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -175,7 +175,6 @@ body::after {
 
 .hero__title {
   font-family: var(--font-display);
-  /* Увеличили заголовок примерно в 1,5 раза относительно исходного размера */
   font-size: clamp(72px, 12vw, 180px);
   line-height: 0.92;
   letter-spacing: 0.02em;
@@ -1990,4 +1989,162 @@ body.menu-open {
     gap: clamp(2px, 1vw, 5px);
   }
   .equalizer__bar { flex: 0 0 clamp(3px, 1vw, 5px); width: clamp(3px, 1vw, 5px); }
+}
+
+
+/* =========================================================
+   FINAL REFINEMENTS — PARTNER CARDS + ABOUT FLIP
+   ========================================================= */
+/* Общий контейнер партнёров остаётся полностью нейтральным.
+   Стеклянные подложки и свечения принадлежат только карточкам. */
+.partners__grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: clamp(14px, 1.5vw, 24px);
+  max-width: var(--container);
+  margin: 0 auto;
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  background: transparent !important;
+  box-shadow: none !important;
+  -webkit-backdrop-filter: none !important;
+  backdrop-filter: none !important;
+}
+.partners__item {
+  --partner-glow: rgba(255,255,255,.14);
+  position: relative;
+  isolation: isolate;
+  min-width: 0;
+  min-height: clamp(150px, 13vw, 190px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: clamp(18px, 2vw, 30px);
+  overflow: hidden;
+  border: 1px solid rgba(255,255,255,.13);
+  border-radius: 26px;
+  background: linear-gradient(145deg, rgba(255,255,255,.075), rgba(255,255,255,.018));
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.08), 0 14px 38px rgba(0,0,0,.2);
+  transition: transform .42s cubic-bezier(.2,.75,.25,1), border-color .42s ease, box-shadow .42s ease, background .42s ease;
+}
+.partners__item::before {
+  content: ""; position: absolute; z-index: -1; inset: -35%;
+  background: radial-gradient(ellipse at center, var(--partner-glow), transparent 62%);
+  opacity: .55; transition: opacity .42s ease, transform .42s ease;
+}
+.partners__item--zvonko { --partner-glow: rgba(79,220,207,.28); }
+.partners__item--yandex { --partner-glow: rgba(255,190,28,.25); }
+.partners__item--vk { --partner-glow: rgba(112,83,255,.3); }
+.partners__item--koala { --partner-glow: rgba(205,215,235,.25); }
+.partners__logo {
+  position: relative; z-index: 1; width: 100%; min-width: 0;
+  display: flex; align-items: center; justify-content: center;
+  gap: clamp(8px, 1vw, 16px);
+}
+.partners__icon {
+  flex: 0 0 auto; width: clamp(38px, 3.6vw, 54px); height: clamp(38px, 3.6vw, 54px);
+  object-fit: contain; transform: rotate(0deg) scale(1); transform-origin: center;
+  backface-visibility: hidden;
+}
+.partners__wordmark {
+  display: block; width: auto; max-width: 68%; max-height: clamp(34px, 4vw, 58px);
+  object-fit: contain; opacity: 1;
+}
+.partners__logo--zvonko .partners__icon { width: clamp(46px, 4.2vw, 62px); }
+.partners__logo--yandex { gap: clamp(5px, .65vw, 10px); }
+.partners__logo--yandex .partners__icon { width: clamp(34px, 3.2vw, 48px); }
+.partners__wordmark--yandex-left { max-width: 31%; }
+.partners__wordmark--yandex-right { max-width: 43%; }
+.partners__logo--vk .partners__icon { width: clamp(42px, 3.8vw, 56px); }
+.partners__logo--koala .partners__icon { width: clamp(46px, 4.2vw, 62px); }
+@keyframes partner-icon-full-spin {
+  from { transform: rotate(0deg) scale(1); }
+  to { transform: rotate(360deg) scale(1.14); }
+}
+@media (hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference) {
+  .partners__item:hover {
+    transform: translateY(-7px) scale(1.035);
+    border-color: color-mix(in srgb, var(--partner-glow) 85%, white 15%);
+    box-shadow: inset 0 1px 0 rgba(255,255,255,.14), 0 22px 48px rgba(0,0,0,.32), 0 0 30px var(--partner-glow);
+  }
+  .partners__item:hover::before { opacity: 1; transform: scale(1.18); }
+  .partners__item:hover .partners__icon { animation: partner-icon-full-spin .9s cubic-bezier(.2,.7,.25,1) both; }
+}
+@media (max-width: 900px) {
+  .partners__grid { grid-template-columns: repeat(2, minmax(0,1fr)); }
+}
+@media (max-width: 520px) {
+  .partners__grid { grid-template-columns: 1fr; gap: 12px; }
+  .partners__item { min-height: 118px; border-radius: 20px; padding: 18px 22px; }
+  .partners__logo { gap: 12px; }
+  .partners__icon { width: 42px; height: 42px; }
+  .partners__wordmark { max-height: 42px; }
+}
+
+/* ABOUT: diagonal 3D flip card. Front keeps all existing copy unchanged. */
+.about__content {
+  padding: 0 !important;
+  perspective: 1400px;
+  overflow: visible !important;
+  background: transparent;
+  border: 0;
+  box-shadow: none;
+  transform: none;
+  will-change: auto;
+}
+.about__content::before, .about__content::after { display: none !important; }
+.about__flip-inner {
+  position: relative; display: grid; width: 100%;
+  transform-style: preserve-3d;
+  transition: transform 900ms cubic-bezier(.2,.72,.18,1);
+  will-change: transform;
+}
+.about__content.is-flipped .about__flip-inner { transform: rotate3d(1, 1, 0, 180deg); }
+.about__face {
+  grid-area: 1 / 1; position: relative; min-width: 0;
+  border-radius: 32px; overflow: hidden;
+  -webkit-backface-visibility: hidden; backface-visibility: hidden;
+}
+.about__face--front {
+  z-index: 1; padding: clamp(28px, 4vw, 56px);
+  background: var(--glass-bg); border: 1px solid var(--glass-edge);
+  box-shadow: var(--glass-shadow);
+}
+.about__face--back {
+  display: flex; align-items: flex-start; justify-content: flex-end;
+  min-height: 100%; padding: 18px;
+  background: linear-gradient(145deg, #f1f2f4 0%, #c9cdd3 48%, #aeb4bd 100%);
+  border: 1px solid rgba(255,255,255,.75);
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.9), 0 18px 50px rgba(0,0,0,.25);
+  transform: rotate3d(1, 1, 0, -180deg);
+}
+.about__flip-button {
+  position: absolute; z-index: 5; top: 18px; right: 18px;
+  width: 42px; height: 42px; display: grid; place-items: center;
+  padding: 0; border: 1px solid rgba(255,255,255,.34); border-radius: 50%;
+  color: #fff; background: rgba(255,255,255,.1);
+  font: inherit; font-size: 23px; line-height: 1; cursor: pointer;
+  -webkit-backdrop-filter: blur(12px); backdrop-filter: blur(12px);
+  transition: transform .25s ease, background .25s ease, color .25s ease;
+}
+.about__flip-button:hover { transform: rotate(45deg) scale(1.08); background: rgba(255,255,255,.2); }
+.about__flip-button--back { color: #30343a; background: rgba(255,255,255,.48); border-color: rgba(35,40,48,.18); }
+.about__flip-button--back:hover { background: rgba(255,255,255,.78); }
+.about__face--front { padding-top: clamp(72px, 5vw, 82px); }
+@media (max-width: 768px) {
+  .about__face { border-radius: 24px; }
+  .about__face--front { padding: 66px 18px 24px; }
+  .about__face--back { padding: 14px; }
+  .about__flip-button { top: 14px; right: 14px; width: 38px; height: 38px; }
+  .about__content { perspective: 1000px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .about__flip-inner, .partners__item, .partners__icon { transition: none !important; animation: none !important; }
+}
+
+@media (min-width: 769px) {
+  html {
+    zoom: 1.15;
+  }
 }
