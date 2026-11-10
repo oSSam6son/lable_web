@@ -6,14 +6,13 @@ document.addEventListener("DOMContentLoaded", () => {
   initSmoothAnchors();
   initSmoothWheel();
   initScrollDown();
-  initHeroShadow();
-  initEqualizer();
   initSeamlessMarquee();
   initArtistCards();
-  initFooterYear();
   initHeader();
   initArtistsCarousel();
   initAboutFlipCard();
+  initVinylRotation();
+  initVinylLogoAnimation();
 });
 
 function initSmoothAnchors() {
@@ -63,10 +62,6 @@ function initSmoothAnchors() {
   });
 }
 
-/* =========================================================
-   Плавное колесо мыши по всей странице
-   Нативный wheel обычно перескакивает сразу; здесь инерция сглаживается.
-   ========================================================= */
 function initSmoothWheel() {
   const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
   const isTouch = window.matchMedia("(pointer: coarse)").matches;
@@ -84,10 +79,6 @@ function initSmoothWheel() {
   });
 }
 
-/* =========================================================
-   1. Стрелка "скролл вниз" в Hero
-   Скроллит к центру секции About
-   ========================================================= */
 function initScrollDown() {
   const scrollBtn = document.getElementById("scrollDown");
   const aboutSection = document.getElementById("about");
@@ -100,7 +91,6 @@ function initScrollDown() {
     const windowHeight = window.innerHeight;
 
     const sectionCenter = window.scrollY + rect.top + sectionHeight / 2;
-
     let targetScroll = sectionCenter - windowHeight / 2;
 
     const maxScroll = document.documentElement.scrollHeight - windowHeight;
@@ -112,150 +102,6 @@ function initScrollDown() {
       window.scrollTo({ top: targetScroll, behavior: "smooth" });
     }
   });
-}
-
-/* =========================================================
-   2. Тень от курсора для hero-man
-   Курсор = источник света.
-   Тень уходит в противоположную сторону от курсора.
-   Яркость и смещение зависят от расстояния до центра картинки.
-   ========================================================= */
-function initHeroShadow() {
-  const heroImg = document.getElementById("heroMan");
-  if (!heroImg) return;
-
-  if (!window.matchMedia("(hover: hover) and (pointer: fine)").matches) return;
-  // ---------- Настройки эффекта ----------
-  const MAX_OFFSET = 50;
-  const MAX_DISTANCE = 350;
-  const CORE_BLUR = 10;
-  const HALO_BLUR = 40;
-  const HALO_MULT = 1.5;
-
-  const COLOR = "255, 255, 255";
-  const CORE_ALPHA_MIN = 0.12;
-  const CORE_ALPHA_MAX = 0.22;
-  const HALO_ALPHA_MIN = 0.06;
-  const HALO_ALPHA_MAX = 0.12;
-
-  // ---------- Состояние ----------
-  let rafId = null;
-  let pendingX = 0;
-  let pendingY = 0;
-
-  // ---------- Функции ----------
-  function applyShadow(x, y, coreAlpha, haloAlpha) {
-    heroImg.style.filter =
-      `drop-shadow(${x}px ${y}px ${CORE_BLUR}px rgba(${COLOR}, ${coreAlpha})) ` +
-      `drop-shadow(${x * HALO_MULT}px ${y * HALO_MULT}px ${HALO_BLUR}px rgba(${COLOR}, ${haloAlpha}))`;
-  }
-
-  function clearShadow() {
-    heroImg.style.filter = "none";
-  }
-
-  function updateShadow() {
-    rafId = null;
-
-    const rect = heroImg.getBoundingClientRect();
-    const centerX = rect.left + rect.width / 2;
-    const centerY = rect.top + rect.height / 2;
-
-    const dx = pendingX - centerX;
-    const dy = pendingY - centerY;
-    const distance = Math.sqrt(dx * dx + dy * dy);
-
-    const strength = Math.min(distance / MAX_DISTANCE, 1);
-    const angleX = distance === 0 ? 0 : dx / distance;
-    const angleY = distance === 0 ? 0 : dy / distance;
-
-    const shadowX = -angleX * MAX_OFFSET * strength;
-    const shadowY = -angleY * MAX_OFFSET * strength;
-
-    const coreAlpha =
-      CORE_ALPHA_MIN + strength * (CORE_ALPHA_MAX - CORE_ALPHA_MIN);
-    const haloAlpha =
-      HALO_ALPHA_MIN + strength * (HALO_ALPHA_MAX - HALO_ALPHA_MIN);
-
-    applyShadow(shadowX, shadowY, coreAlpha, haloAlpha);
-  }
-
-  function onMouseMove(e) {
-    pendingX = e.clientX;
-    pendingY = e.clientY;
-
-    if (!rafId) {
-      rafId = requestAnimationFrame(updateShadow);
-    }
-  }
-
-  // ---------- Слушатели ----------
-  heroImg.addEventListener("mousemove", onMouseMove);
-
-  heroImg.addEventListener("mouseleave", () => {
-    if (rafId) {
-      cancelAnimationFrame(rafId);
-      rafId = null;
-    }
-    clearShadow();
-  });
-}
-
-/* =========================================================
-   3. Эквалайзер в hero
-   Визуальная имитация аудио-спектра
-   ========================================================= */
-function initEqualizer() {
-  const equalizer = document.getElementById("equalizer");
-  if (!equalizer) return;
-
-  // ---------- Настройки ----------
-  const MIN_HEIGHT = 8;
-  const MAX_HEIGHT = 100;
-  const isMobile = window.matchMedia("(pointer: coarse)").matches;
-  const FPS = isMobile ? 20 : 30;
-  const BAR_COUNT = isMobile ? 16 : 24;
-
-  // ---------- Создаём полоски ----------
-  const bars = [];
-  for (let i = 0; i < BAR_COUNT; i++) {
-    const bar = document.createElement("div");
-    bar.className = "equalizer__bar";
-    equalizer.appendChild(bar);
-
-    bars.push({
-      el: bar,
-      current: MIN_HEIGHT,
-      target: MIN_HEIGHT,
-      speed: 0.15 + Math.random() * 0.25,
-      amplitude: 0.5 + Math.sin((i / BAR_COUNT) * Math.PI) * 0.5,
-    });
-  }
-
-  // ---------- Анимация ----------
-  let lastTime = 0;
-  const interval = 1000 / FPS;
-
-  function tick(time) {
-    if (time - lastTime >= interval) {
-      lastTime = time;
-
-      bars.forEach((bar) => {
-        if (Math.random() < 0.4) {
-          const base = MIN_HEIGHT + Math.random() * (MAX_HEIGHT - MIN_HEIGHT);
-          bar.target = base * bar.amplitude + MIN_HEIGHT * (1 - bar.amplitude);
-        }
-
-        bar.current += (bar.target - bar.current) * bar.speed;
-
-        bar.el.style.height = bar.current + "%";
-      });
-    }
-
-    requestAnimationFrame(tick);
-  }
-
-  requestAnimationFrame(tick);
 }
 
 function initSeamlessMarquee() {
@@ -277,10 +123,6 @@ function initSeamlessMarquee() {
   window.addEventListener("resize", measure, { passive: true });
 }
 
-/* =========================================================
-   5. Reactive-подсветка карточек артистов
-   Пятно света следует за курсором внутри карточки
-   ========================================================= */
 function initArtistCards() {
   const finePointer = window.matchMedia("(hover: hover) and (pointer: fine)");
   const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
@@ -320,17 +162,6 @@ function initArtistCards() {
   });
 }
 
-function initFooterYear() {
-  const year = document.getElementById("footerYear");
-  if (year) year.textContent = String(new Date().getFullYear());
-}
-
-/* =========================================================
-   6. Меню (header)
-   - стеклянная панель по центру, «линза» едет к активному пункту
-   - прячется при скролле вниз, возвращается при скролле вверх
-   - на мобильных — бургер и полноэкранное меню
-   ========================================================= */
 function initHeader() {
   const header = document.getElementById("header");
   const nav = document.getElementById("nav");
@@ -456,13 +287,6 @@ function initHeader() {
   onScroll();
 }
 
-/* =========================================================
-   7. Карусель артистов
-   Трек двигаем сами через transform, без нативного scroll-snap.
-   Позиция — дробный «индекс слайда»; после отпускания к цели
-   ведёт критически задемпфированная пружина, поэтому и недосвайп,
-   и бросок заканчиваются плавно, без рывков.
-   ========================================================= */
 function initArtistsCarousel() {
   const root = document.getElementById("artistsCarousel");
   if (!root) return;
@@ -481,7 +305,6 @@ function initArtistsCarousel() {
   );
   const last = slides.length - 1;
 
-  // ---------- Настройки ----------
   const STIFFNESS = 140;
   const DAMPING = 2 * Math.sqrt(STIFFNESS);
   const PROJECTION = 0.2;
@@ -490,7 +313,6 @@ function initArtistsCarousel() {
   const DRAG_START = 6;
   const MAX_VEL = 8;
 
-  // ---------- Состояние ----------
   let step = 1;
   let pos = 0;
   let vel = 0;
@@ -499,7 +321,6 @@ function initArtistsCarousel() {
   let rafId = null;
   let lastTime = 0;
 
-  // ---------- Точки ----------
   const dots = slides.map((_, i) => {
     const dot = document.createElement("button");
     dot.type = "button";
@@ -544,7 +365,6 @@ function initArtistsCarousel() {
     }
   }
 
-  // ---------- Пружина ----------
   function stopLoop() {
     if (rafId) cancelAnimationFrame(rafId);
     rafId = null;
@@ -601,7 +421,6 @@ function initArtistsCarousel() {
     startLoop();
   }
 
-  // ---------- Перетаскивание ----------
   let dragging = false;
   let moved = false;
   let pointerId = null;
@@ -694,7 +513,6 @@ function initArtistsCarousel() {
 
   viewport.addEventListener("dragstart", (e) => e.preventDefault());
 
-  // ---------- Горизонтальный скролл трекпадом ----------
   let wheelTimer = null;
 
   viewport.addEventListener(
@@ -731,7 +549,6 @@ function initArtistsCarousel() {
     }
   });
 
-  // ---------- Стрелки и клавиатура ----------
   if (prevBtn) prevBtn.addEventListener("click", () => goTo(target - 1));
   if (nextBtn) nextBtn.addEventListener("click", () => goTo(target + 1));
 
@@ -748,7 +565,6 @@ function initArtistsCarousel() {
     }
   });
 
-  // ---------- Resize и старт ----------
   window.addEventListener("resize", () => {
     measure();
     render();
@@ -764,9 +580,6 @@ function initArtistsCarousel() {
   render();
 }
 
-/* =========================================================
-   ABOUT — переворот карточки + блик при наведении
-   ========================================================= */
 function initAboutFlipCard() {
   const card = document.getElementById("aboutFlipCard");
   if (!card) return;
@@ -811,5 +624,246 @@ function initAboutFlipCard() {
   card.addEventListener("mouseleave", () => {
     clearTimeout(glintTimer);
     card.classList.remove("glint-active");
+  });
+}
+
+/* =========================================================
+   VINYL — ROTATION ONLY (без смены лого)
+   ========================================================= */
+function initVinylRotation() {
+  const discs = document.querySelectorAll(".vinyl-disc");
+
+  if (!discs.length) return;
+
+  const duration = 20000;
+  const initialAngle = 30;
+
+  const reducedMotion = window.matchMedia(
+    "(prefers-reduced-motion: reduce)",
+  ).matches;
+
+  discs.forEach((disc) => {
+    if (disc.dataset.vinylInitialized === "true") return;
+
+    disc.dataset.vinylInitialized = "true";
+
+    const wrapper = disc.closest(".vinyl-wrapper") || disc;
+    const topRotator = disc.querySelector("#vinyl-top-rotator");
+    const bottomRotator = disc.querySelector("#vinyl-bottom-rotator");
+
+    let angle = initialAngle;
+    let direction = 1;
+    let previousTime = null;
+
+    disc.style.setProperty("--split-angle", `${angle}deg`);
+
+    if (reducedMotion) return;
+
+    /* При наведении — только смена направления */
+    wrapper.addEventListener("pointerenter", () => {
+      direction = -1;
+    });
+
+    wrapper.addEventListener("pointerleave", () => {
+      direction = 1;
+    });
+
+    function animate(currentTime) {
+      if (document.hidden) {
+        previousTime = null;
+        requestAnimationFrame(animate);
+        return;
+      }
+
+      if (previousTime !== null) {
+        const delta = Math.min(currentTime - previousTime, 50);
+
+        angle += direction * delta * (360 / duration);
+
+        angle = ((angle % 360) + 360) % 360;
+      }
+
+      previousTime = currentTime;
+
+      const rotation = `rotate(${angle} .5 .5)`;
+
+      if (topRotator) {
+        topRotator.setAttribute("transform", rotation);
+      }
+
+      if (bottomRotator) {
+        bottomRotator.setAttribute("transform", rotation);
+      }
+
+      requestAnimationFrame(animate);
+    }
+
+    requestAnimationFrame(animate);
+  });
+}
+
+/* =========================================================
+   VINYL — СМЕНА ЛОГОТИПА БЛИКОМ И ТОНКОЙ ЛИНИЕЙ
+   ========================================================= */
+function initVinylLogoAnimation() {
+  const labels = document.querySelectorAll(".vinyl-label");
+  if (!labels.length) return;
+
+  const reducedMotion = window.matchMedia(
+    "(prefers-reduced-motion: reduce)",
+  ).matches;
+  if (reducedMotion) return;
+
+  labels.forEach((label) => {
+    if (label.dataset.logoAnimationInitialized === "true") return;
+
+    const logos = Array.from(
+      label.querySelectorAll(".vinyl-label__logo"),
+    );
+    if (logos.length < 2) return;
+
+    const initialActiveIndex = logos.findIndex((logo) =>
+      logo.classList.contains("is-active"),
+    );
+    let activeIndex = initialActiveIndex >= 0 ? initialActiveIndex : 0;
+    let cycleTimer = null;
+    let animationFrame = null;
+    let isAnimating = false;
+
+    const nextLogoIsReady = () => {
+      const nextLogo = logos[1 - activeIndex];
+      return nextLogo.complete && nextLogo.naturalWidth > 0;
+    };
+
+    const startCycleTimer = () => {
+      if (cycleTimer !== null || !nextLogoIsReady()) return;
+      label.dataset.logoAnimationInitialized = "true";
+      cycleTimer = window.setInterval(startTransition, 6000);
+    };
+
+    function startTransition() {
+      if (document.hidden || isAnimating || !nextLogoIsReady()) return;
+
+      isAnimating = true;
+      const currentLogo = logos[activeIndex];
+      const nextIndex = 1 - activeIndex;
+      const nextLogo = logos[nextIndex];
+      const startTime = performance.now();
+      let wipeStarted = false;
+
+      currentLogo.style.clipPath = "inset(0)";
+      nextLogo.style.clipPath = "polygon(0 0, 0 0, 0 100%, 0 100%)";
+      label.style.setProperty("--wipe-edge", "0%");
+      label.classList.remove("is-wiping");
+      // Маска блика повторяет альфа-контур активного PNG, поэтому не выходит
+      // квадратом за пределы самого логотипа.
+      const activeLogoSrc = currentLogo.getAttribute("src") || "flow.png";
+      label.style.setProperty("--logo-mask", `url("${activeLogoSrc}")`);
+      label.classList.add("is-glinting");
+
+      const glintDuration = 520;
+      const pauseAfterGlint = 80;
+      const wipeDuration = 760;
+      const totalDuration = glintDuration + pauseAfterGlint + wipeDuration;
+      const diagonalOffset = 24;
+
+      const finishTransition = () => {
+        currentLogo.classList.remove("is-active");
+        currentLogo.style.clipPath = "";
+        nextLogo.style.clipPath = "";
+        nextLogo.classList.add("is-active");
+        label.classList.remove("is-glinting", "is-wiping");
+        label.style.removeProperty("--wipe-edge");
+        label.style.setProperty(
+          "--logo-mask",
+          `url("${nextLogo.getAttribute("src") || "flow2.png"}")`,
+        );
+        activeIndex = nextIndex;
+        isAnimating = false;
+        animationFrame = null;
+      };
+
+      const animate = (currentTime) => {
+        const elapsed = currentTime - startTime;
+
+        if (elapsed < glintDuration) {
+          // CSS анимирует только блик; логотип остаётся полностью видимым.
+        } else if (elapsed < glintDuration + pauseAfterGlint) {
+          label.classList.remove("is-glinting");
+        } else {
+          if (!wipeStarted) {
+            wipeStarted = true;
+            label.classList.remove("is-glinting");
+            label.classList.add("is-wiping");
+          }
+
+          const wipeElapsed = elapsed - glintDuration - pauseAfterGlint;
+          const linearProgress = Math.min(1, wipeElapsed / wipeDuration);
+          const progress =
+            linearProgress * linearProgress * (3 - 2 * linearProgress);
+          const wipeEdge = progress * (100 + diagonalOffset);
+
+          // Логотипы занимают строго противоположные стороны одной границы:
+          // слева уже новый, справа ещё старый — без наложения изображений.
+          const bottomEdge = wipeEdge - diagonalOffset;
+
+          nextLogo.style.clipPath = `polygon(
+            0 0,
+            ${wipeEdge}% 0,
+            ${bottomEdge}% 100%,
+            0 100%
+          )`;
+
+          currentLogo.style.clipPath = `polygon(
+            ${wipeEdge}% 0,
+            100% 0,
+            100% 100%,
+            ${bottomEdge}% 100%
+          )`;
+
+          label.style.setProperty("--wipe-edge", `${wipeEdge}%`);
+        }
+
+        if (elapsed >= totalDuration) {
+          finishTransition();
+          return;
+        }
+
+        animationFrame = window.requestAnimationFrame(animate);
+      };
+
+      animationFrame = window.requestAnimationFrame(animate);
+    }
+
+    // Ждём загрузки второго файла, чтобы смена не открывала пустую область.
+    if (logos[1 - activeIndex].complete) {
+      startCycleTimer();
+    } else {
+      logos[1 - activeIndex].addEventListener("load", startCycleTimer, {
+        once: true,
+      });
+    }
+
+    // Если второй файл не найден, исходный логотип остаётся без анимации.
+    logos[1 - activeIndex].addEventListener(
+      "error",
+      () => {
+        if (cycleTimer !== null) {
+          window.clearInterval(cycleTimer);
+          cycleTimer = null;
+        }
+        if (animationFrame !== null) {
+          window.cancelAnimationFrame(animationFrame);
+          animationFrame = null;
+        }
+        label.classList.remove("is-glinting", "is-wiping");
+        label.style.removeProperty("--wipe-edge");
+        label.style.removeProperty("--logo-mask");
+        currentLogo.style.clipPath = "";
+        nextLogo.style.clipPath = "";
+        isAnimating = false;
+      },
+      { once: true },
+    );
   });
 }

@@ -72,7 +72,7 @@
         </div>
       </div>
     </aside>
-    <!-- ================= HEADER / МЕНЮ ================= -->
+
     <header class="header" id="header">
       <nav class="nav" id="nav" aria-label="Основное меню">
         <span class="nav__lens" aria-hidden="true"></span>
@@ -94,11 +94,8 @@
       </button>
     </header>
 
-    <!-- ================= HERO ================= -->
     <section class="hero" id="hero">
       <h1 class="hero__title">FLOW STATE MUSIC</h1>
-
-      <div class="equalizer" id="equalizer" aria-hidden="true"></div>
 
       <button class="hero__scroll" id="scrollDown" aria-label="Прокрутить вниз">
         <svg
@@ -116,10 +113,165 @@
       </button>
     </section>
 
-    <!-- ================= ABOUT ================= -->
     <section class="about" id="about">
       <div class="about__inner">
-        <div class="about__image">
+        <div class="about__image" id="aboutImage">
+          <div class="vinyl-wrapper">
+            <div class="vinyl-disc">
+              <!-- CHAOTIC ZIGZAG VINYL MASKS -->
+              <svg
+                class="vinyl-mask-defs"
+                xmlns="http://www.w3.org/2000/svg"
+                aria-hidden="true"
+              >
+                <defs>
+                  <filter
+                    id="vinyl-zigzag-soft"
+                    x="-0.1"
+                    y="-0.1"
+                    width="1.2"
+                    height="1.2"
+                    filterUnits="objectBoundingBox"
+                    primitiveUnits="objectBoundingBox"
+                  >
+                    <feGaussianBlur stdDeviation="0.0005" />
+                  </filter>
+
+                  <!-- СЕРЕБРИСТАЯ СТОРОНА -->
+                  <mask
+                    id="vinyl-top-mask"
+                    maskUnits="objectBoundingBox"
+                    maskContentUnits="objectBoundingBox"
+                    mask-type="luminance"
+                    x="-0.1"
+                    y="-0.1"
+                    width="1.2"
+                    height="1.2"
+                  >
+                    <g id="vinyl-top-rotator" transform="rotate(30 .5 .5)">
+                      <path
+                        d="
+    M -1 -1
+    H 2
+    V 0.50
+    L 1.96 0.48 L 1.93 0.56 L 1.89 0.44 L 1.86 0.52 L 1.82 0.39
+    L 1.78 0.58 L 1.75 0.47 L 1.71 0.55 L 1.68 0.43 L 1.64 0.51
+    L 1.61 0.41 L 1.57 0.59 L 1.54 0.46 L 1.50 0.53 L 1.47 0.38
+    L 1.43 0.55 L 1.40 0.44 L 1.36 0.60 L 1.33 0.48 L 1.29 0.42
+    L 1.26 0.56 L 1.22 0.45 L 1.19 0.52 L 1.15 0.40 L 1.12 0.61
+    L 1.08 0.47 L 1.05 0.54 L 1.01 0.43 L 0.98 0.58 L 0.94 0.45
+    L 0.91 0.51 L 0.87 0.39 L 0.84 0.62 L 0.80 0.48 L 0.77 0.54
+    L 0.73 0.42 L 0.70 0.57 L 0.66 0.46 L 0.63 0.52 L 0.59 0.37
+    L 0.56 0.58 L 0.52 0.45 L 0.49 0.55 L 0.45 0.41 L 0.42 0.60
+    L 0.38 0.48 L 0.35 0.53 L 0.31 0.39 L 0.28 0.57 L 0.24 0.46
+    L 0.21 0.54 L 0.17 0.42 L 0.14 0.61 L 0.10 0.47 L 0.07 0.51
+    L 0.03 0.38 L 0.00 0.59 L -0.04 0.44 L -0.07 0.55 L -0.11 0.43
+    L -0.14 0.60 L -0.18 0.48 L -0.21 0.53 L -0.25 0.40 L -0.28 0.57
+    L -0.32 0.46 L -0.35 0.52 L -0.39 0.41 L -0.42 0.62 L -0.46 0.49
+    L -0.49 0.55 L -0.53 0.37 L -0.56 0.58 L -0.60 0.45 L -0.63 0.51
+    L -0.67 0.39 L -0.70 0.60 L -0.74 0.47 L -0.77 0.54 L -0.81 0.42
+    L -0.84 0.57 L -0.88 0.46 L -0.91 0.53 L -0.95 0.40 L -0.98 0.56
+    L -1.00 0.52
+    Z
+  "
+                        fill="white"
+                        filter="url(#vinyl-zigzag-soft)"
+                      />
+                    </g>
+                  </mask>
+
+                  <!-- ЧЁРНАЯ СТОРОНА -->
+                  <mask
+                    id="vinyl-bottom-mask"
+                    maskUnits="objectBoundingBox"
+                    maskContentUnits="objectBoundingBox"
+                    mask-type="luminance"
+                    x="-0.1"
+                    y="-0.1"
+                    width="1.2"
+                    height="1.2"
+                  >
+                    <g id="vinyl-bottom-rotator" transform="rotate(30 .5 .5)">
+                      <path
+                        d="
+    M -1.00 0.52
+    L -0.98 0.56 L -0.95 0.40 L -0.91 0.53 L -0.88 0.46
+    L -0.84 0.57 L -0.81 0.42 L -0.77 0.54 L -0.74 0.47 L -0.70 0.60
+    L -0.67 0.39 L -0.63 0.51 L -0.60 0.45 L -0.56 0.58 L -0.53 0.37
+    L -0.49 0.55 L -0.46 0.49 L -0.42 0.62 L -0.39 0.41 L -0.35 0.52
+    L -0.32 0.46 L -0.28 0.57 L -0.25 0.40 L -0.21 0.53 L -0.18 0.48
+    L -0.14 0.60 L -0.11 0.43 L -0.07 0.55 L -0.04 0.44 L 0.00 0.59
+    L 0.03 0.38 L 0.07 0.51 L 0.10 0.47 L 0.14 0.61 L 0.17 0.42
+    L 0.21 0.54 L 0.24 0.46 L 0.28 0.57 L 0.31 0.39 L 0.35 0.53
+    L 0.38 0.48 L 0.42 0.60 L 0.45 0.41 L 0.49 0.55 L 0.52 0.45
+    L 0.56 0.58 L 0.59 0.37 L 0.63 0.52 L 0.66 0.46 L 0.70 0.57
+    L 0.73 0.42 L 0.77 0.54 L 0.80 0.48 L 0.84 0.62 L 0.87 0.39
+    L 0.91 0.51 L 0.94 0.45 L 0.98 0.58 L 1.01 0.43 L 1.05 0.54
+    L 1.08 0.47 L 1.12 0.61 L 1.15 0.40 L 1.19 0.52 L 1.22 0.45
+    L 1.26 0.56 L 1.29 0.42 L 1.33 0.48 L 1.36 0.60 L 1.40 0.44
+    L 1.43 0.55 L 1.47 0.38 L 1.50 0.53 L 1.54 0.46 L 1.57 0.59
+    L 1.61 0.41 L 1.64 0.51 L 1.68 0.43 L 1.71 0.55 L 1.75 0.47
+    L 1.78 0.58 L 1.82 0.39 L 1.86 0.52 L 1.89 0.44 L 1.93 0.56
+    L 1.96 0.48 L 2 0.50
+    V 2
+    H -1
+    Z
+  "
+                        fill="white"
+                        filter="url(#vinyl-zigzag-soft)"
+                      />
+                    </g>
+                  </mask>
+                </defs>
+              </svg>
+              <div class="vinyl-surface-light"></div>
+
+              <!-- Фиолетовые дорожки -->
+              <div class="vinyl-grooves vinyl-grooves-light">
+                <span class="groove thin"></span>
+                <span class="groove thick"></span>
+                <span class="groove thin"></span>
+                <span class="groove thick"></span>
+                <span class="groove thin"></span>
+                <span class="groove thick"></span>
+                <span class="groove thick"></span>
+              </div>
+
+              <!-- Белые дорожки -->
+              <div class="vinyl-grooves vinyl-grooves-dark">
+                <span class="groove thin"></span>
+                <span class="groove thick"></span>
+                <span class="groove thin"></span>
+                <span class="groove thick"></span>
+                <span class="groove thin"></span>
+                <span class="groove thick"></span>
+                <span class="groove thick"></span>
+              </div>
+
+              <div class="vinyl-hole"></div>
+            </div>
+
+            <!-- Центральный логотип: блик и смена по тонкой линии -->
+            <div class="vinyl-label">
+              <div class="vinyl-label__inner">
+                <img
+                  class="vinyl-label__logo is-active"
+                  src="flow.png"
+                  alt="FLOW"
+                  draggable="false"
+                />
+                <img
+                  class="vinyl-label__logo"
+                  src="logo.png"
+                  alt=""
+                  aria-hidden="true"
+                  draggable="false"
+                />
+                <span class="vinyl-label__shine" aria-hidden="true"></span>
+                <span class="vinyl-label__wipe-line" aria-hidden="true"></span>
+              </div>
+            </div>
+          </div>
         </div>
 
         <div class="about__content" id="aboutFlipCard">
@@ -167,7 +319,6 @@
       </div>
     </section>
 
-    <!-- ================= ARTISTS ================= -->
     <section class="artists" id="artists">
       <h2 class="section-title">Артисты</h2>
 
@@ -296,25 +447,6 @@
       </div>
     </section>
 
-    <!-- ================= MARQUEE / ПЕРЕХОД К КОНТАКТАМ ================= -->
-    <!-- <a
-      class="marquee"
-      href="#contacts"
-      aria-label="Больше о нас — перейти к контактам"
-    >
-      <span class="marquee__track" aria-hidden="true">
-        <span class="marquee__content"
-          >БОЛЬШЕ О НАС <i>●</i> БОЛЬШЕ О НАС <i>●</i> БОЛЬШЕ О НАС
-          <i>●</i> БОЛЬШЕ О НАС <i>●</i>&nbsp;</span
-        >
-        <span class="marquee__content"
-          >БОЛЬШЕ О НАС <i>●</i> БОЛЬШЕ О НАС <i>●</i> БОЛЬШЕ О НАС
-          <i>●</i> БОЛЬШЕ О НАС <i>●</i>&nbsp;</span
-        >
-      </span>
-    </a> -->
-
-    <!-- ================= PARTNERS ================= -->
     <section class="partners" id="partners">
       <h2 class="section-title">Партнёры</h2>
 
@@ -387,7 +519,6 @@
       </div>
     </section>
 
-    <!-- ================= CONTACTS ================= -->
     <section class="contacts" id="contacts">
       <div class="contacts__inner">
         <div class="contacts__heading">
