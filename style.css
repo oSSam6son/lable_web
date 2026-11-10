@@ -214,7 +214,7 @@ button:focus-visible,
    ========================================================= */
 .hero {
   position: relative;
-  min-height: 80vh;
+  min-height: 90vh;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -260,7 +260,7 @@ button:focus-visible,
    4. ABOUT (ВИНИЛ)
    ========================================================= */
 .about {
-  padding: 120px var(--gutter);
+  padding: 120px 0;
   position: relative;
   isolation: isolate;
   overflow: hidden;
@@ -301,8 +301,8 @@ button:focus-visible,
   align-items: center;
   justify-content: center;
   z-index: 1;
-  animation: vinyl-breathe 3.5s ease-in-out infinite; /* ← добавь */
-  will-change: transform; /* ← добавь */
+  animation: vinyl-breathe 3.5s ease-in-out infinite;
+  will-change: transform;
 }
 
 /* =========================================================
@@ -1921,43 +1921,50 @@ body.menu-open {
       inset 0 1px 0 rgba(255, 255, 255, 0.9),
       0 8px 20px rgba(0, 0, 0, 0.2) !important;
   }
+  /* --- Мобильный флип: чистый cross-fade без вращения --- */
   .about__content#aboutFlipCard {
     perspective: none !important;
     transform-style: flat !important;
   }
   .about__flip-inner {
     transform-style: flat !important;
+    transition: none !important;
     will-change: auto !important;
   }
+  .about__content#aboutFlipCard.is-flipped .about__flip-inner {
+    transform: none !important;
+  }
+
   .about__face {
     transform: none !important;
     will-change: auto !important;
     -webkit-backface-visibility: visible !important;
     backface-visibility: visible !important;
-  }
-  .about__face--back {
-    transform: rotateY(180deg) !important;
-    opacity: 0;
-    transition: opacity 0ms 400ms;
-  }
-  .about__content#aboutFlipCard.is-flipped .about__face--back {
-    opacity: 1;
-    transition: opacity 0ms 400ms;
-  }
-  .about__content#aboutFlipCard.is-flipped .about__face--front {
-    opacity: 0;
-    transition: opacity 0ms 400ms;
-  }
-  .about__content#aboutFlipCard .about__face--front {
-    opacity: 1;
-    transition: opacity 0ms 400ms;
-  }
-  .about__content#aboutFlipCard.is-flipped .about__flip-inner {
-    transform: rotateY(180deg) !important;
+    transition: opacity 260ms ease !important;
   }
 
-  body::after,
-  body::before,
+  .about__face--front {
+    z-index: 2;
+    opacity: 1;
+  }
+
+  .about__face--back {
+    z-index: 1;
+    opacity: 0;
+    transform: none !important;
+    padding: 0;
+  }
+
+  .about__content#aboutFlipCard.is-flipped .about__face--front {
+    z-index: 1;
+    opacity: 0;
+  }
+
+  .about__content#aboutFlipCard.is-flipped .about__face--back {
+    z-index: 2;
+    opacity: 1;
+  }
+
   .carousel::before {
     display: none !important;
   }
@@ -2051,5 +2058,101 @@ body.menu-open {
 @media (min-width: 769px) {
   html {
     zoom: 1.15;
+  }
+}
+
+@media (max-width: 768px) {
+  body::before {
+    background:
+      radial-gradient(
+        90vw 60vw at 12% 18%,
+        rgba(124, 58, 237, 0.28),
+        transparent 70%
+      ),
+      radial-gradient(
+        85vw 75vw at 88% 58%,
+        rgba(91, 33, 182, 0.3),
+        transparent 70%
+      ),
+      radial-gradient(
+        70vw 55vw at 45% 105%,
+        rgba(124, 58, 237, 0.22),
+        transparent 70%
+      );
+  }
+}
+
+/* =========================================================
+   HERO — SEGMENTED EQUALIZER
+   ========================================================= */
+
+.hero {
+  flex-direction: column;
+  gap: 100px;
+}
+
+.hero__equalizer {
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  gap: 8px;
+  width: 100%;
+  height: 110px;
+  margin-top: 35px;
+  pointer-events: none;
+}
+
+.hero__equalizer-bar {
+  flex: 0 0 10px;
+  height: 100%;
+  border-radius: 100px;
+  transform-origin: bottom;
+  transform: scaleY(0.08);
+
+  background: linear-gradient(
+    to top,
+    #7c3aed 0%,
+    hsl(var(--bar-hue) 90% 65%) 55%,
+    #f9a8d4 100%
+  );
+
+  box-shadow: 0 0 9px rgba(168, 85, 247, 0.22);
+
+  animation: hero-equalizer-bounce var(--bar-duration) var(--bar-delay) infinite
+    cubic-bezier(0.45, 0, 0.55, 1);
+  will-change: transform;
+}
+
+@keyframes hero-equalizer-bounce {
+  0%,
+  100% {
+    transform: scaleY(0.08);
+  }
+
+  35% {
+    transform: scaleY(var(--bar-peak));
+  }
+
+  65% {
+    transform: scaleY(var(--bar-fall));
+  }
+}
+
+@media (max-width: 768px) {
+  .hero__equalizer {
+    gap: 5px;
+    height: 80px;
+    margin-top: 25px;
+  }
+
+  .hero__equalizer-bar {
+    flex-basis: 7px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero__equalizer-bar {
+    animation: none;
+    transform: scaleY(0.35);
   }
 }

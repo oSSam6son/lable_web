@@ -13,6 +13,7 @@ document.addEventListener("DOMContentLoaded", () => {
   initAboutFlipCard();
   initVinylRotation();
   initVinylLogoAnimation();
+  initHeroEqualizer();
 });
 
 function initSmoothAnchors() {
@@ -717,9 +718,7 @@ function initVinylLogoAnimation() {
   labels.forEach((label) => {
     if (label.dataset.logoAnimationInitialized === "true") return;
 
-    const logos = Array.from(
-      label.querySelectorAll(".vinyl-label__logo"),
-    );
+    const logos = Array.from(label.querySelectorAll(".vinyl-label__logo"));
     if (logos.length < 2) return;
 
     const initialActiveIndex = logos.findIndex((logo) =>
@@ -866,4 +865,35 @@ function initVinylLogoAnimation() {
       { once: true },
     );
   });
+}
+
+/* =========================================================
+   HERO — SEGMENTED EQUALIZER
+   ========================================================= */
+
+function initHeroEqualizer() {
+  const equalizer = document.getElementById("heroEqualizer");
+  if (!equalizer) return;
+
+  const BAR_COUNT = 25;
+
+  for (let i = 0; i < BAR_COUNT; i++) {
+    const bar = document.createElement("span");
+
+    bar.className = "hero__equalizer-bar";
+
+    const peak = 0.35 + Math.random() * 0.65;
+    const fall = 0.12 + Math.random() * 0.35;
+    const duration = 1000 + Math.random() * 800;
+    const delay = -Math.random() * duration;
+    const hue = 275 + (i / (BAR_COUNT - 1)) * 55;
+
+    bar.style.setProperty("--bar-peak", peak.toFixed(2));
+    bar.style.setProperty("--bar-fall", fall.toFixed(2));
+    bar.style.setProperty("--bar-duration", `${duration.toFixed(0)}ms`);
+    bar.style.setProperty("--bar-delay", `${delay.toFixed(0)}ms`);
+    bar.style.setProperty("--bar-hue", hue.toFixed(0));
+
+    equalizer.appendChild(bar);
+  }
 }
