@@ -1965,6 +1965,8 @@ body.menu-open {
     opacity: 1;
   }
 
+  body::after,
+  body::before,
   .carousel::before {
     display: none !important;
   }
@@ -2061,26 +2063,6 @@ body.menu-open {
   }
 }
 
-@media (max-width: 768px) {
-  body::before {
-    background:
-      radial-gradient(
-        90vw 60vw at 12% 18%,
-        rgba(124, 58, 237, 0.28),
-        transparent 70%
-      ),
-      radial-gradient(
-        85vw 75vw at 88% 58%,
-        rgba(91, 33, 182, 0.3),
-        transparent 70%
-      ),
-      radial-gradient(
-        70vw 55vw at 45% 105%,
-        rgba(124, 58, 237, 0.22),
-        transparent 70%
-      );
-  }
-}
 
 /* =========================================================
    HERO — SEGMENTED EQUALIZER
