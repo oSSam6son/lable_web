@@ -2137,6 +2137,10 @@ body.menu-open {
   .hero__equalizer-bar {
     flex-basis: 7px;
   }
+
+  .rail__track {
+    animation: none !important;
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -2144,40 +2148,4 @@ body.menu-open {
     animation: none;
     transform: scaleY(0.35);
   }
-}
-
-/* Мобилка: CSS-маска вместо SVG-зигзага (плавнее в разы) */
-.vinyl-surface-light,
-.vinyl-grooves-light {
-  -webkit-mask-image: linear-gradient(
-    calc(var(--split-angle) + 90deg),
-    transparent calc(50% - 0.5%),
-    #000 calc(50% + 0.5%)
-  ) !important;
-  mask-image: linear-gradient(
-    calc(var(--split-angle) + 90deg),
-    transparent calc(50% - 0.5%),
-    #000 calc(50% + 0.5%)
-  ) !important;
-  -webkit-mask-size: 100% 100% !important;
-  mask-size: 100% 100% !important;
-  -webkit-mask-repeat: no-repeat !important;
-  mask-repeat: no-repeat !important;
-}
-
-.vinyl-grooves-dark {
-  -webkit-mask-image: linear-gradient(
-    calc(var(--split-angle) + 90deg),
-    #000 calc(50% - 0.5%),
-    transparent calc(50% + 0.5%)
-  ) !important;
-  mask-image: linear-gradient(
-    calc(var(--split-angle) + 90deg),
-    #000 calc(50% - 0.5%),
-    transparent calc(50% + 0.5%)
-  ) !important;
-  -webkit-mask-size: 100% 100% !important;
-  mask-size: 100% 100% !important;
-  -webkit-mask-repeat: no-repeat !important;
-  mask-repeat: no-repeat !important;
 }
