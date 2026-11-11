@@ -289,8 +289,6 @@ button:focus-visible,
   isolation: isolate;
   outline: none !important;
   cursor: default !important;
-  content-visibility: auto;
-  contain-intrinsic-size: 500px 500px;
 }
 
 .vinyl-wrapper {
@@ -1631,11 +1629,16 @@ body.menu-open {
   }
   .partners__grid {
     grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
   }
   .partners__item {
-    border-right: none;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.15);
-    padding: 24px;
+    min-height: 110px;
+    padding: 14px 10px;
+    border: 1px solid rgba(255, 255, 255, 0.1); /* вернул рамку для сетки */
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1) !important;
+  }
+  .partners__logo {
+    gap: 6px;
   }
   .partners__item:nth-child(odd) {
     border-right: 1px solid rgba(255, 255, 255, 0.15);
@@ -1677,12 +1680,17 @@ body.menu-open {
     margin-bottom: 40px;
   }
   .partners__grid {
-    grid-template-columns: 1fr;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
   }
   .partners__item {
-    border-right: none !important;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.15);
-    padding: 20px;
+    min-height: 110px;
+    padding: 14px 10px;
+    border: 1px solid rgba(255, 255, 255, 0.1); /* вернул рамку для сетки */
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1) !important;
+  }
+  .partners__logo {
+    gap: 6px;
   }
   .partners__item:last-child {
     border-bottom: none;
@@ -2063,7 +2071,6 @@ body.menu-open {
   }
 }
 
-
 /* =========================================================
    HERO — SEGMENTED EQUALIZER
    ========================================================= */
@@ -2137,4 +2144,40 @@ body.menu-open {
     animation: none;
     transform: scaleY(0.35);
   }
+}
+
+/* Мобилка: CSS-маска вместо SVG-зигзага (плавнее в разы) */
+.vinyl-surface-light,
+.vinyl-grooves-light {
+  -webkit-mask-image: linear-gradient(
+    calc(var(--split-angle) + 90deg),
+    transparent calc(50% - 0.5%),
+    #000 calc(50% + 0.5%)
+  ) !important;
+  mask-image: linear-gradient(
+    calc(var(--split-angle) + 90deg),
+    transparent calc(50% - 0.5%),
+    #000 calc(50% + 0.5%)
+  ) !important;
+  -webkit-mask-size: 100% 100% !important;
+  mask-size: 100% 100% !important;
+  -webkit-mask-repeat: no-repeat !important;
+  mask-repeat: no-repeat !important;
+}
+
+.vinyl-grooves-dark {
+  -webkit-mask-image: linear-gradient(
+    calc(var(--split-angle) + 90deg),
+    #000 calc(50% - 0.5%),
+    transparent calc(50% + 0.5%)
+  ) !important;
+  mask-image: linear-gradient(
+    calc(var(--split-angle) + 90deg),
+    #000 calc(50% - 0.5%),
+    transparent calc(50% + 0.5%)
+  ) !important;
+  -webkit-mask-size: 100% 100% !important;
+  mask-size: 100% 100% !important;
+  -webkit-mask-repeat: no-repeat !important;
+  mask-repeat: no-repeat !important;
 }

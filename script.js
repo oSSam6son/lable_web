@@ -678,22 +678,21 @@ function initVinylRotation() {
 
       if (previousTime !== null) {
         const delta = Math.min(currentTime - previousTime, 50);
-
         angle += direction * delta * (360 / duration);
-
         angle = ((angle % 360) + 360) % 360;
       }
-
       previousTime = currentTime;
 
-      const rotation = `rotate(${angle} .5 .5)`;
+      // Всегда обновляем CSS-переменную (дешево, используется на мобилке)
+      disc.style.setProperty("--split-angle", `${angle}deg`);
 
-      if (topRotator) {
-        topRotator.setAttribute("transform", rotation);
-      }
-
-      if (bottomRotator) {
-        bottomRotator.setAttribute("transform", rotation);
+      // SVG-атрибуты обновляем только на десктопе (на мобилке они не нужны)
+      const isMobile = window.innerWidth <= 768;
+      if (!isMobile && Math.abs(angle - lastAppliedAngle) > 1) {
+        const rotation = `rotate(${angle} .5 .5)`;
+        if (topRotator) topRotator.setAttribute("transform", rotation);
+        if (bottomRotator) bottomRotator.setAttribute("transform", rotation);
+        lastAppliedAngle = angle;
       }
 
       requestAnimationFrame(animate);
