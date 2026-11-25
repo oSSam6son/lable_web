@@ -1,3 +1,6 @@
+/* =========================================================
+   1. ПЕРЕМЕННЫЕ И СБРОС
+   ========================================================= */
 :root {
   --bg: #060606;
   --text: #ffffff;
@@ -137,6 +140,9 @@ button:focus-visible,
   outline-offset: 4px;
 }
 
+/* =========================================================
+   2. БОКОВЫЕ RAILS
+   ========================================================= */
 .rail {
   position: fixed;
   top: 0;
@@ -175,7 +181,7 @@ button:focus-visible,
     transform: translate3d(0, 0, 0);
   }
   to {
-    transform: translate3d(0, var(--rail-distance, -33.3333333333%), 0);
+    transform: translate3d(0, -33.3333333333%, 0);
   }
 }
 
@@ -203,6 +209,9 @@ button:focus-visible,
   opacity: 0.85;
 }
 
+/* =========================================================
+   3. HERO
+   ========================================================= */
 .hero {
   position: relative;
   min-height: 90vh;
@@ -247,6 +256,9 @@ button:focus-visible,
   }
 }
 
+/* =========================================================
+   4. ABOUT (ВИНИЛ)
+   ========================================================= */
 .about {
   padding: 120px 0;
   position: relative;
@@ -291,6 +303,11 @@ button:focus-visible,
   will-change: transform;
 }
 
+/* =========================================================
+   VINYL — ДИСК: ДЫХАНИЕ (scale) + СТАТИЧНЫЙ ОБЪЁМ
+   ========================================================= */
+
+/* Дыхание размера — GPU-transform, дёшево */
 @keyframes vinyl-breathe {
   0%,
   100% {
@@ -334,6 +351,7 @@ button:focus-visible,
 
   border: 2px solid rgba(205, 205, 230, 0.9);
 
+  /* Дырка в центре */
   -webkit-mask-image: radial-gradient(
     circle closest-side at center,
     transparent 38%,
@@ -345,6 +363,7 @@ button:focus-visible,
     #000 39%
   );
 
+  /* Статичная тень — глубина сцены */
   box-shadow:
     0 34px 60px rgba(0, 0, 0, 0.92),
     0 15px 26px rgba(0, 0, 0, 0.7),
@@ -360,6 +379,7 @@ button:focus-visible,
   backface-visibility: hidden;
 }
 
+/* Блик поверх диска */
 .vinyl-disc::before {
   content: "" !important;
   position: absolute;
@@ -381,6 +401,7 @@ button:focus-visible,
     );
 }
 
+/* Внутренний обод */
 .vinyl-disc::after {
   content: "";
   position: absolute;
@@ -394,6 +415,9 @@ button:focus-visible,
     inset 0 -1px 0 rgba(0, 0, 0, 0.4);
 }
 
+/* =========================================================
+   VINYL — СЕРЕБРИСТАЯ ПОВЕРХНОСТЬ
+   ========================================================= */
 .vinyl-surface-light {
   position: absolute;
   inset: 0;
@@ -422,6 +446,9 @@ button:focus-visible,
     );
 }
 
+/* =========================================================
+   VINYL — ДОРОЖКИ
+   ========================================================= */
 .vinyl-grooves {
   position: absolute;
   inset: 0;
@@ -476,6 +503,7 @@ button:focus-visible,
   height: 96%;
 }
 
+/* Розово-фиолетовые дорожки — более яркий цвет без тяжёлых эффектов */
 .vinyl-grooves-light .groove {
   border-color: darkviolet;
 }
@@ -484,6 +512,9 @@ button:focus-visible,
   border-color: #ffffff;
 }
 
+/* =========================================================
+   VINYL — МАСКИ SVG (ХАОС)
+   ========================================================= */
 .vinyl-mask-defs {
   position: absolute;
   width: 0;
@@ -511,6 +542,9 @@ button:focus-visible,
   mask-size: 100% 100%;
 }
 
+/* =========================================================
+   VINYL — ЦЕНТРАЛЬНЫЙ ЛОГОТИП (БЛИК + СМЕНА ПО ЛИНИИ)
+   ========================================================= */
 .vinyl-label {
   position: absolute;
   top: 50%;
@@ -634,6 +668,9 @@ button:focus-visible,
   display: none !important;
 }
 
+/* =========================================================
+   5. КАРТОЧКА ABOUT (3D FLIP)
+   ========================================================= */
 .about__content#aboutFlipCard {
   position: relative;
   padding: 0 !important;
@@ -877,6 +914,9 @@ button:focus-visible,
   box-shadow: var(--glass-shadow);
 }
 
+/* =========================================================
+   6. ARTISTS CAROUSEL
+   ========================================================= */
 .artists {
   padding: 80px var(--gutter) 120px;
 }
@@ -1070,6 +1110,9 @@ button:focus-visible,
   transform: scale(1.4);
 }
 
+/* =========================================================
+   7. PARTNERS
+   ========================================================= */
 .partners {
   padding: 120px var(--gutter);
 }
@@ -1226,6 +1269,9 @@ button:focus-visible,
   }
 }
 
+/* =========================================================
+   8. CONTACTS
+   ========================================================= */
 .contacts {
   position: relative;
   margin-top: 0;
@@ -1414,6 +1460,9 @@ button:focus-visible,
   font-size: 15px;
 }
 
+/* =========================================================
+   9. HEADER (LIQUID GLASS)
+   ========================================================= */
 .header {
   position: fixed;
   top: 0;
@@ -1535,6 +1584,9 @@ body.menu-open {
   overflow: hidden;
 }
 
+/* =========================================================
+   10. MARQUEE & LEGAL STRIP
+   ========================================================= */
 .marquee {
   display: none;
 }
@@ -1558,6 +1610,9 @@ body.menu-open {
   letter-spacing: 0.07em;
 }
 
+/* =========================================================
+   11. АДАПТИВ (Mobile Performance)
+   ========================================================= */
 @media (max-width: 1024px) {
   :root {
     --rail-width: 40px;
@@ -1579,7 +1634,7 @@ body.menu-open {
   .partners__item {
     min-height: 110px;
     padding: 14px 10px;
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.1); /* вернул рамку для сетки */
     border-bottom: 1px solid rgba(255, 255, 255, 0.1) !important;
   }
   .partners__logo {
@@ -1631,7 +1686,7 @@ body.menu-open {
   .partners__item {
     min-height: 110px;
     padding: 14px 10px;
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.1); /* вернул рамку для сетки */
     border-bottom: 1px solid rgba(255, 255, 255, 0.1) !important;
   }
   .partners__logo {
@@ -1746,6 +1801,7 @@ body.menu-open {
     background: rgba(255, 255, 255, 0.22);
   }
 
+  /* Мобильная раскладка: карточка сверху, диск снизу */
   .about__inner {
     display: flex;
     flex-direction: column;
@@ -1873,6 +1929,7 @@ body.menu-open {
       inset 0 1px 0 rgba(255, 255, 255, 0.9),
       0 8px 20px rgba(0, 0, 0, 0.2) !important;
   }
+  /* --- Мобильный флип: чистый cross-fade без вращения --- */
   .about__content#aboutFlipCard {
     perspective: none !important;
     transform-style: flat !important;
@@ -2013,6 +2070,10 @@ body.menu-open {
     zoom: 1.15;
   }
 }
+
+/* =========================================================
+   HERO — SEGMENTED EQUALIZER
+   ========================================================= */
 
 .hero {
   flex-direction: column;

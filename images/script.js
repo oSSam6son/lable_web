@@ -1,7 +1,3 @@
-/* =========================================================
-   FLOW STATE MUSIC — main script
-   ========================================================= */
-
 document.addEventListener("DOMContentLoaded", () => {
   initSmoothAnchors();
   initSmoothWheel();
@@ -14,40 +10,7 @@ document.addEventListener("DOMContentLoaded", () => {
   initVinylRotation();
   initVinylLogoAnimation();
   initHeroEqualizer();
-  initRails();
 });
-
-function initRails() {
-  const tracks = document.querySelectorAll(".rail__track");
-  if (!tracks.length) return;
-
-  const measure = () => {
-    tracks.forEach((track) => {
-      const group = track.querySelector(".rail__group");
-      if (!group) return;
-      const h = group.getBoundingClientRect().height;
-      if (h > 0) {
-        track.style.setProperty("--rail-distance", `-${h}px`);
-      }
-    });
-  };
-
-  measure();
-
-  if (document.fonts && document.fonts.ready) {
-    document.fonts.ready.then(measure);
-  }
-
-  let resizeTimer = null;
-  window.addEventListener(
-    "resize",
-    () => {
-      clearTimeout(resizeTimer);
-      resizeTimer = setTimeout(measure, 150);
-    },
-    { passive: true },
-  );
-}
 
 function initSmoothAnchors() {
   const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
@@ -355,15 +318,17 @@ function initArtistsCarousel() {
   let rafId = null;
   let lastTime = 0;
 
+  const dotsFragment = document.createDocumentFragment();
   const dots = slides.map((_, i) => {
     const dot = document.createElement("button");
     dot.type = "button";
     dot.className = "carousel__dot";
     dot.setAttribute("aria-label", `Артист ${i + 1} из ${slides.length}`);
     dot.addEventListener("click", () => goTo(i));
-    dotsBox.appendChild(dot);
+    dotsFragment.appendChild(dot);
     return dot;
   });
+  dotsBox.appendChild(dotsFragment);
 
   const clampIndex = (i) => Math.max(0, Math.min(last, i));
 
@@ -586,16 +551,17 @@ function initArtistsCarousel() {
   if (prevBtn) prevBtn.addEventListener("click", () => goTo(target - 1));
   if (nextBtn) nextBtn.addEventListener("click", () => goTo(target + 1));
 
+  const keyActions = {
+    ArrowLeft: () => goTo(target - 1),
+    ArrowRight: () => goTo(target + 1),
+    Home: () => goTo(0),
+    End: () => goTo(last),
+  };
+
   viewport.addEventListener("keydown", (e) => {
-    const keys = {
-      ArrowLeft: () => goTo(target - 1),
-      ArrowRight: () => goTo(target + 1),
-      Home: () => goTo(0),
-      End: () => goTo(last),
-    };
-    if (keys[e.key]) {
+    if (keyActions[e.key]) {
       e.preventDefault();
-      keys[e.key]();
+      keyActions[e.key]();
     }
   });
 
@@ -661,9 +627,6 @@ function initAboutFlipCard() {
   });
 }
 
-/* =========================================================
-   VINYL — ROTATION ONLY (без смены лого)
-   ========================================================= */
 function initVinylRotation() {
   const discs = document.querySelectorAll(".vinyl-disc");
 
@@ -693,7 +656,6 @@ function initVinylRotation() {
 
     if (reducedMotion) return;
 
-    /* При наведении — только смена направления */
     wrapper.addEventListener("pointerenter", () => {
       direction = -1;
     });
@@ -736,9 +698,6 @@ function initVinylRotation() {
   });
 }
 
-/* =========================================================
-   VINYL — СМЕНА ЛОГОТИПА БЛИКОМ И ТОНКОЙ ЛИНИЕЙ
-   ========================================================= */
 function initVinylLogoAnimation() {
   const labels = document.querySelectorAll(".vinyl-label");
   if (!labels.length) return;
@@ -787,8 +746,6 @@ function initVinylLogoAnimation() {
       nextLogo.style.clipPath = "polygon(0 0, 0 0, 0 100%, 0 100%)";
       label.style.setProperty("--wipe-edge", "0%");
       label.classList.remove("is-wiping");
-      // Маска блика повторяет альфа-контур активного PNG, поэтому не выходит
-      // квадратом за пределы самого логотипа.
       const activeLogoSrc = currentLogo.getAttribute("src") || "flow.png";
       label.style.setProperty("--logo-mask", `url("${activeLogoSrc}")`);
       label.classList.add("is-glinting");
@@ -819,7 +776,6 @@ function initVinylLogoAnimation() {
         const elapsed = currentTime - startTime;
 
         if (elapsed < glintDuration) {
-          // CSS анимирует только блик; логотип остаётся полностью видимым.
         } else if (elapsed < glintDuration + pauseAfterGlint) {
           label.classList.remove("is-glinting");
         } else {
@@ -835,8 +791,6 @@ function initVinylLogoAnimation() {
             linearProgress * linearProgress * (3 - 2 * linearProgress);
           const wipeEdge = progress * (100 + diagonalOffset);
 
-          // Логотипы занимают строго противоположные стороны одной границы:
-          // слева уже новый, справа ещё старый — без наложения изображений.
           const bottomEdge = wipeEdge - diagonalOffset;
 
           nextLogo.style.clipPath = `polygon(
@@ -867,7 +821,6 @@ function initVinylLogoAnimation() {
       animationFrame = window.requestAnimationFrame(animate);
     }
 
-    // Ждём загрузки второго файла, чтобы смена не открывала пустую область.
     if (logos[1 - activeIndex].complete) {
       startCycleTimer();
     } else {
@@ -876,7 +829,6 @@ function initVinylLogoAnimation() {
       });
     }
 
-    // Если второй файл не найден, исходный логотип остаётся без анимации.
     logos[1 - activeIndex].addEventListener(
       "error",
       () => {
@@ -900,15 +852,12 @@ function initVinylLogoAnimation() {
   });
 }
 
-/* =========================================================
-   HERO — SEGMENTED EQUALIZER
-   ========================================================= */
-
 function initHeroEqualizer() {
   const equalizer = document.getElementById("heroEqualizer");
   if (!equalizer) return;
 
   const BAR_COUNT = 25;
+  const fragment = document.createDocumentFragment();
 
   for (let i = 0; i < BAR_COUNT; i++) {
     const bar = document.createElement("span");
@@ -927,6 +876,8 @@ function initHeroEqualizer() {
     bar.style.setProperty("--bar-delay", `${delay.toFixed(0)}ms`);
     bar.style.setProperty("--bar-hue", hue.toFixed(0));
 
-    equalizer.appendChild(bar);
+    fragment.appendChild(bar);
   }
+
+  equalizer.appendChild(fragment);
 }
